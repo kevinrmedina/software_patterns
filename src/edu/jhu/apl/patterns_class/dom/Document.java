@@ -11,11 +11,33 @@ public class Document extends Node implements edu.jhu.apl.patterns_class.dom.rep
 	//
 	// Implemented Document members.
 	//
-	public edu.jhu.apl.patterns_class.dom.replacement.Element createElement(String tagName) throws org.w3c.dom.DOMException
-	  {return new Element(tagName,this);}
-	public edu.jhu.apl.patterns_class.dom.replacement.Text createTextNode(String data) { return new Text(data, this); }
+	/*public edu.jhu.apl.patterns_class.dom.replacement.Element createElement(String tagName) throws org.w3c.dom.DOMException
+	  {
+		  return new Element(tagName,this);
+	  }
+	public edu.jhu.apl.patterns_class.dom.replacement.Text createTextNode(String data)
+	{
+		return new Text(data, this);
+	}
 	public edu.jhu.apl.patterns_class.dom.replacement.Attr createAttribute(String name) throws org.w3c.dom.DOMException
-	  { return new Attr(name, this); }
+	  {
+		  return new Attr(name, this);
+	  }*/
+// Replaces the individual create functions, this acts as the Creator function
+	public Node createDOM(String domType, String str){
+		if(domType == "element"){
+			return new Element(str, this);
+		}
+		else if (domType == "text"){
+			return new Text(str, this);
+		}
+		else if (domType == "attr"){
+			return new Attr(str, this);
+		}
+		else
+			return null;
+	}
+
 	public edu.jhu.apl.patterns_class.dom.replacement.Element getDocumentElement()
 	{
 		for (java.util.ListIterator i = ((NodeList )getChildNodes()).listIterator(0); i.hasNext();)

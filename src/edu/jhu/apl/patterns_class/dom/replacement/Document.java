@@ -5,9 +5,10 @@ public interface Document extends Node
 	//
 	// Implemented Document members.
 	//
-	public Element createElement(String tagName) throws org.w3c.dom.DOMException;
-	public Text createTextNode(String data);
-	public Attr createAttribute(String name) throws org.w3c.dom.DOMException;
+	//public Element createElement(String tagName) throws org.w3c.dom.DOMException;
+	//public Text createTextNode(String data);
+	//public Attr createAttribute(String name) throws org.w3c.dom.DOMException;
+	public Node createDOM(String domType, String str);
 	public Element getDocumentElement();
 
 	//
