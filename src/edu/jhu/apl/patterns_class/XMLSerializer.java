@@ -1,5 +1,11 @@
 package edu.jhu.apl.patterns_class;
 
+import edu.jhu.apl.patterns_class.dom.replacement.Document;
+import edu.jhu.apl.patterns_class.dom.replacement.Node;
+import edu.jhu.apl.patterns_class.dom.replacement.Text;
+
+import java.io.IOException;
+
 public class XMLSerializer
 {
 	java.io.File		file			= null;
@@ -173,28 +179,28 @@ public class XMLSerializer
 		//   </element>
 		// </document>
 		//
-		edu.jhu.apl.patterns_class.dom.replacement.Document	document	=
+		Document	document	=
 		  new edu.jhu.apl.patterns_class.dom.Document();
-		edu.jhu.apl.patterns_class.dom.replacement.Element	root		= document.createElement("document");
+		Node	root		= document.createDOM("element", "document");
 		document.appendChild(root);
 
-		edu.jhu.apl.patterns_class.dom.replacement.Element	child		= document.createElement("element");
-		edu.jhu.apl.patterns_class.dom.replacement.Attr		attr		= document.createAttribute("attribute");
+		Node	child		= document.createDOM("element", "element");
+		Node		attr		= document.createDOM("attr", "attribute");
 		attr.setValue("attribute value");
 		child.setAttributeNode(attr);
 		root.appendChild(child);
 
-		child	= document.createElement("element");
+		child	= document.createDOM("element", "element");
 		root.appendChild(child);
 
-		child	= document.createElement("element");
+		child	= document.createDOM("element", "element");
 		child.setAttribute("attribute", "attribute value");
 		child.setAttribute("attribute2", "attribute2 value");
-		edu.jhu.apl.patterns_class.dom.replacement.Text		text		= document.createTextNode("Element Value");
+		edu.jhu.apl.patterns_class.dom.replacement.Node		text		= document.createDOM("text", "Element Value");
 		child.appendChild(text);
 		root.appendChild(child);
 
-		child	= document.createElement("element");
+		child	= document.createDOM("element", "element");
 		root.appendChild(child);
 
 		//
@@ -209,7 +215,7 @@ public class XMLSerializer
 			xmlSerializer.serializeMinimal(document);
 			xmlSerializer.close();
 		}
-		catch (java.io.IOException e)
+		catch (IOException e)
 		{
 			System.out.println("Error writing file.");
 			e.printStackTrace();

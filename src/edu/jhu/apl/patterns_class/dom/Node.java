@@ -155,6 +155,10 @@ public class Node implements edu.jhu.apl.patterns_class.dom.replacement.Node
 	public String getTextContent()									{ return null; }
 	public short compareDocumentPosition(edu.jhu.apl.patterns_class.dom.replacement.Node other)	{ return (short )0; }
 	public String getBaseURI()									{ return null; }
+	public void setValue(String attribute_value) {}
+	public void setAttributeNode(edu.jhu.apl.patterns_class.dom.replacement.Node attr) {}
+	public void setAttribute(String attribute, String attribute_value) {}
+	public String getTagName() {return null;}
 
 	//
 	// Class Members

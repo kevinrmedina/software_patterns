@@ -46,4 +46,12 @@ public interface Node
 	public String getTextContent();
 	public short compareDocumentPosition(Node other);
 	public String getBaseURI();
+
+	void setValue(String attribute_value);
+
+	void setAttributeNode(Node attr);
+
+	void setAttribute(String attribute, String attribute_value);
+
+	String getTagName();
 }

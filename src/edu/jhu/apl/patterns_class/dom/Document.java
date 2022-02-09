@@ -11,20 +11,13 @@ public class Document extends Node implements edu.jhu.apl.patterns_class.dom.rep
 	//
 	// Implemented Document members.
 	//
-	/*public edu.jhu.apl.patterns_class.dom.replacement.Element createElement(String tagName) throws org.w3c.dom.DOMException
-	  {
-		  return new Element(tagName,this);
-	  }
-	public edu.jhu.apl.patterns_class.dom.replacement.Text createTextNode(String data)
-	{
-		return new Text(data, this);
-	}
-	public edu.jhu.apl.patterns_class.dom.replacement.Attr createAttribute(String name) throws org.w3c.dom.DOMException
-	  {
-		  return new Attr(name, this);
-	  }*/
+//	public edu.jhu.apl.patterns_class.dom.replacement.Node createElement(String tagName) throws org.w3c.dom.DOMException
+//	{return new Element(tagName,this);}
+//	public edu.jhu.apl.patterns_class.dom.replacement.Text createTextNode(String data) { return new Text(data, this); }
+//	public edu.jhu.apl.patterns_class.dom.replacement.Attr createAttribute(String name) throws org.w3c.dom.DOMException
+//	{ return new Attr(name, this); }
 // Replaces the individual create functions, this acts as the Creator function
-	public Node createDOM(String domType, String str){
+	public edu.jhu.apl.patterns_class.dom.replacement.Node createDOM(String domType, String str){
 		if(domType == "element"){
 			return new Element(str, this);
 		}
@@ -77,6 +70,11 @@ public class Document extends Node implements edu.jhu.apl.patterns_class.dom.rep
 	  { return null; }
 	public edu.jhu.apl.patterns_class.dom.replacement.Element getElementById(String elementId) { return null; }
 	public edu.jhu.apl.patterns_class.dom.replacement.Node cloneNode(boolean deep) { return null; }
+
+
+	public void setValue(String attribute_value) {}
+	public void setAttributeNode(edu.jhu.apl.patterns_class.dom.replacement.Node attr) {}
+	public void setAttribute(String attribute, String attribute_value) {}
 	public edu.jhu.apl.patterns_class.dom.replacement.Node
 	  renameNode(edu.jhu.apl.patterns_class.dom.replacement.Node n, String namespaceURI, String qualifiedName) { return null; }
 	public void normalizeDocument() {}

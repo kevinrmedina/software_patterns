@@ -33,21 +33,21 @@ public class XMLValidator
 		return canAddElement(null, newElement);
 	}
 
-	public boolean canAddElement(edu.jhu.apl.patterns_class.dom.replacement.Element element, String newElement)
+	public boolean canAddElement(edu.jhu.apl.patterns_class.dom.replacement.Node element, String newElement)
 	{
 		ValidChildren	schemaElement	= findSchemaElement(element == null ? null : element.getTagName());
 
 		return schemaElement == null ? true : schemaElement.childIsValid(newElement, false);
 	}
 
-	public boolean canAddText(edu.jhu.apl.patterns_class.dom.replacement.Element element)
+	public boolean canAddText(edu.jhu.apl.patterns_class.dom.replacement.Node element)
 	{
 		ValidChildren	schemaElement	= findSchemaElement(element.getTagName());
 
 		return schemaElement == null ? true : schemaElement.canHaveText();
 	}
 
-	public boolean canAddAttribute(edu.jhu.apl.patterns_class.dom.replacement.Element element, String newAttribute)
+	public boolean canAddAttribute(edu.jhu.apl.patterns_class.dom.replacement.Node element, String newAttribute)
 	{
 		ValidChildren	schemaElement	= findSchemaElement(element.getTagName());
 
@@ -100,13 +100,13 @@ public class XMLValidator
 
 		edu.jhu.apl.patterns_class.dom.replacement.Document	document	=
 		  new edu.jhu.apl.patterns_class.dom.Document();
-		edu.jhu.apl.patterns_class.dom.replacement.Element	root		= null;
-		edu.jhu.apl.patterns_class.dom.replacement.Element	child		= null;
-		edu.jhu.apl.patterns_class.dom.replacement.Attr		attr		= null;
+		edu.jhu.apl.patterns_class.dom.replacement.Node	root		= null;
+		edu.jhu.apl.patterns_class.dom.replacement.Node	child		= null;
+		edu.jhu.apl.patterns_class.dom.replacement.Node		attr		= null;
 
 		if (xmlValidator.canRootElement("document"))
 		{
-			root	= document.createElement("document");
+			root	= document.createDOM("element", "document");
 			document.appendChild(root);
 		}
 		else
@@ -117,11 +117,11 @@ public class XMLValidator
 
 		if (xmlValidator.canAddElement(root, "element"))
 		{
-			child	= document.createElement("element");
+			child	= document.createDOM("element", "element");
 
 			if (xmlValidator.canAddAttribute(child, "attribute"))
 			{
-				attr	= document.createAttribute("attribute");
+				attr	= document.createDOM("attr", "attribute");
 				attr.setValue("attribute value");
 				child.setAttributeNode(attr);
 			}
@@ -141,7 +141,7 @@ public class XMLValidator
 
 		if (xmlValidator.canAddElement(root, "element"))
 		{
-			child	= document.createElement("element");
+			child	= document.createDOM("element", "element");
 			root.appendChild(child);
 		}
 		else
@@ -152,7 +152,7 @@ public class XMLValidator
 
 		if (xmlValidator.canAddElement(root, "element"))
 		{
-			child	= document.createElement("element");
+			child	= document.createDOM("element", "element");
 
 			if (xmlValidator.canAddAttribute(child, "attribute"))
 				child.setAttribute("attribute", "attribute value");
@@ -172,7 +172,7 @@ public class XMLValidator
 
 			if (xmlValidator.canAddText(child))
 			{
-				edu.jhu.apl.patterns_class.dom.replacement.Text text = document.createTextNode("Element Value");
+				edu.jhu.apl.patterns_class.dom.replacement.Node text = document.createDOM("text", "Element Value");
 				child.appendChild(text);
 			}
 			else
@@ -191,7 +191,7 @@ public class XMLValidator
 
 		if (xmlValidator.canAddElement(root, "element"))
 		{
-			child	= document.createElement("element");
+			child	= document.createDOM("element", "element");
 			root.appendChild(child);
 		}
 		else
