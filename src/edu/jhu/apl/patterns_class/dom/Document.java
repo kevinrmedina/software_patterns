@@ -31,6 +31,27 @@ public class Document extends Node implements edu.jhu.apl.patterns_class.dom.rep
 			return null;
 	}
 
+	public edu.jhu.apl.patterns_class.dom.replacement.Node createDOM(String domType, String str, Document doc){
+		if(domType == "element"){
+			return new Element(str, doc);
+		}
+		else if (domType == "text"){
+			return new Text(str, doc);
+		}
+		else if (domType == "attr") {
+			return new Attr(str, doc);
+		}
+		else
+			return null;
+	}
+
+	public edu.jhu.apl.patterns_class.dom.replacement.Node createDOM(String domType, String str, String value, Document doc){
+		if (domType == "attr")
+			return new Attr(str, value, doc);
+		else
+			return null;
+	}
+
 	public edu.jhu.apl.patterns_class.dom.replacement.Element getDocumentElement()
 	{
 		for (java.util.ListIterator i = ((NodeList )getChildNodes()).listIterator(0); i.hasNext();)
@@ -75,6 +96,12 @@ public class Document extends Node implements edu.jhu.apl.patterns_class.dom.rep
 	public void setValue(String attribute_value) {}
 	public void setAttributeNode(edu.jhu.apl.patterns_class.dom.replacement.Node attr) {}
 	public void setAttribute(String attribute, String attribute_value) {}
+
+	@Override
+	public void setParent(Element element) {
+
+	}
+
 	public edu.jhu.apl.patterns_class.dom.replacement.Node
 	  renameNode(edu.jhu.apl.patterns_class.dom.replacement.Node n, String namespaceURI, String qualifiedName) { return null; }
 	public void normalizeDocument() {}

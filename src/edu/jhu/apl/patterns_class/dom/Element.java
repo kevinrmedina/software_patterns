@@ -1,5 +1,6 @@
 package edu.jhu.apl.patterns_class.dom;
 
+
 public class Element extends Node implements edu.jhu.apl.patterns_class.dom.replacement.Element
 {
 	private NamedNodeMap		attributes	= null;
@@ -58,6 +59,7 @@ public class Element extends Node implements edu.jhu.apl.patterns_class.dom.repl
 	{
 		return getNodeName();
 	}
+
 	public boolean hasAttribute(String name)
 	{
 		for (java.util.ListIterator i = attributes.listIterator(0); i.hasNext();)
@@ -119,8 +121,9 @@ public class Element extends Node implements edu.jhu.apl.patterns_class.dom.repl
 			}
 		}
 
-		Attr	attribute;
-		attributes.addLast(attribute = new Attr(name, value, (Document )getOwnerDocument()));
+		edu.jhu.apl.patterns_class.dom.replacement.Node	attribute;
+		Document doc = new edu.jhu.apl.patterns_class.dom.Document();
+		attributes.addLast(attribute = doc.createDOM("attr", name, value, (Document )getOwnerDocument()));
 		attribute.setParent(this);
 	}
 	public edu.jhu.apl.patterns_class.dom.replacement.Attr
@@ -173,6 +176,7 @@ public class Element extends Node implements edu.jhu.apl.patterns_class.dom.repl
 	public void setIdAttributeNS(String namespaceURI, String localName, boolean isId) {}
 	public void setIdAttribute(String name, boolean isId) {}
 	public org.w3c.dom.TypeInfo getSchemaTypeInfo() { return null; }
+	public void setParent(Element element) {}
 
 
 

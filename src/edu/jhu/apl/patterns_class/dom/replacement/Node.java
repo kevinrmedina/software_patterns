@@ -1,5 +1,7 @@
 package edu.jhu.apl.patterns_class.dom.replacement;
 
+import edu.jhu.apl.patterns_class.dom.Element;
+
 public interface Node
 {
 	//
@@ -54,4 +56,6 @@ public interface Node
 	void setAttribute(String attribute, String attribute_value);
 
 	String getTagName();
+
+	void setParent(Element element);
 }

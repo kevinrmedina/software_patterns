@@ -159,6 +159,7 @@ public class Node implements edu.jhu.apl.patterns_class.dom.replacement.Node
 	public void setAttributeNode(edu.jhu.apl.patterns_class.dom.replacement.Node attr) {}
 	public void setAttribute(String attribute, String attribute_value) {}
 	public String getTagName() {return null;}
+	public void setParent(Element element) {}
 
 	//
 	// Class Members

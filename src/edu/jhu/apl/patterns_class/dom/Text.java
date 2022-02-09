@@ -36,6 +36,7 @@ public class Text extends Node implements edu.jhu.apl.patterns_class.dom.replace
 
 		setData(value);
 	}
+
 	public int getLength()
 	{
 		return getValue().length();
@@ -78,13 +79,15 @@ public class Text extends Node implements edu.jhu.apl.patterns_class.dom.replace
 
 		setValue(substringData(0, offset) + arg + substringData(offset + count, getLength() - (offset + count)));
 	}
-	public edu.jhu.apl.patterns_class.dom.replacement.Text splitText(int offset)
+	public edu.jhu.apl.patterns_class.dom.replacement.Node splitText(int offset)
 	{
 		// TODO:  Check for readonly status.  NO_MODIFICATION_ALLOWED_ERR
 
 		try
 		{
-			Text	text	= new Text(substringData(offset, getLength() - offset), document);
+			Document doc = new Document();
+//			Node	text	= new Text(substringData(offset, getLength() - offset), document);
+			edu.jhu.apl.patterns_class.dom.replacement.Node	text	= doc.createDOM("text", substringData(offset, getLength() - offset), document);
 
 			if (getParentNode() != null)
 			{
@@ -108,4 +111,5 @@ public class Text extends Node implements edu.jhu.apl.patterns_class.dom.replace
 	public edu.jhu.apl.patterns_class.dom.replacement.Text replaceWholeText(String content) { return null; }
 	public String getWholeText() { return null; }
 	public boolean isElementContentWhitespace() { return false; }
+	public void setParent(Element element) {}
 }
