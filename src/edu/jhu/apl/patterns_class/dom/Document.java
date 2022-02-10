@@ -16,7 +16,8 @@ public class Document extends Node implements edu.jhu.apl.patterns_class.dom.rep
 //	public edu.jhu.apl.patterns_class.dom.replacement.Text createTextNode(String data) { return new Text(data, this); }
 //	public edu.jhu.apl.patterns_class.dom.replacement.Attr createAttribute(String name) throws org.w3c.dom.DOMException
 //	{ return new Attr(name, this); }
-// Replaces the individual create functions, this acts as the Creator function
+
+// Replaces the individual create functions, this acts as the Creator functions
 	public edu.jhu.apl.patterns_class.dom.replacement.Node createDOM(String domType, String str){
 		if(domType == "element"){
 			return new Element(str, this);
