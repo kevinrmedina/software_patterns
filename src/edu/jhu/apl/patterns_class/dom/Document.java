@@ -19,27 +19,28 @@ public class Document extends Node implements edu.jhu.apl.patterns_class.dom.rep
 
 // Replaces the individual create functions, this acts as the Creator functions
 	public edu.jhu.apl.patterns_class.dom.replacement.Node createDOM(String domType, String str){
-		if(domType == "element"){
+		if(domType.equals("element")){
 			return new Element(str, this);
 		}
-		else if (domType == "text"){
+		else if (domType.equals("text")){
 			return new Text(str, this);
 		}
-		else if (domType == "attr"){
+		else if (domType.equals("attr")){
 			return new Attr(str, this);
 		}
 		else
 			return null;
+
 	}
 
 	public edu.jhu.apl.patterns_class.dom.replacement.Node createDOM(String domType, String str, Document doc){
-		if(domType == "element"){
+		if(domType.equals("element")){
 			return new Element(str, doc);
 		}
-		else if (domType == "text"){
+		else if (domType.equals("text")){
 			return new Text(str, doc);
 		}
-		else if (domType == "attr") {
+		else if (domType.equals("attr")){
 			return new Attr(str, doc);
 		}
 		else
@@ -47,7 +48,7 @@ public class Document extends Node implements edu.jhu.apl.patterns_class.dom.rep
 	}
 
 	public edu.jhu.apl.patterns_class.dom.replacement.Node createDOM(String domType, String str, String value, Document doc){
-		if (domType == "attr")
+		if (domType.equals("attr"))
 			return new Attr(str, value, doc);
 		else
 			return null;
