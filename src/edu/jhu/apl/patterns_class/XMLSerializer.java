@@ -1,16 +1,16 @@
 package edu.jhu.apl.patterns_class;
 
-import edu.jhu.apl.patterns_class.dom.replacement.Document;
-import edu.jhu.apl.patterns_class.dom.replacement.Node;
-import edu.jhu.apl.patterns_class.dom.replacement.Text;
+import edu.jhu.apl.patterns_class.dom.replacement.*;
 
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class XMLSerializer
 {
 	java.io.File		file			= null;
 	java.io.BufferedWriter	writer			= null;
-	int			indentationLevel	= 0;
+	//int			indentationLevel	= 0;
 
 	public XMLSerializer(String filename) throws java.io.FileNotFoundException
 	{
@@ -23,7 +23,7 @@ public class XMLSerializer
 		writer.close();
 	}
 
-	private void prettyIndentation() throws java.io.IOException
+	private void prettyIndentation(BufferedWriter writer, int indentationLevel) throws java.io.IOException
 	{
 		for (int i = 0; i < indentationLevel; i++)
 			writer.write("\t");
@@ -34,29 +34,43 @@ public class XMLSerializer
 	// Strategize whitespace insertion.
 	// Strategize output stream
 	//
-	public void serializePretty(edu.jhu.apl.patterns_class.dom.replacement.Node node) throws java.io.IOException
-	{
-		if (node instanceof edu.jhu.apl.patterns_class.dom.Document)
-		{
-			writer.write("<? xml version=\"1.0\" encoding=\"UTF-8\"?>");
+
+	public void serialize(String serializeType, Node node, BufferedWriter writer) throws IOException {
+		dataPrintSetStrategy(serializeType, node, writer, 0);
+	}
+
+	private void whitespaceStrategy(String whitespaceType, BufferedWriter writer, int indentationLevel) throws IOException {
+		if (whitespaceType.equals("newline")){
 			writer.write("\n");
-			serializePretty(((edu.jhu.apl.patterns_class.dom.replacement.Document )node).getDocumentElement());
 		}
-		else if (node instanceof edu.jhu.apl.patterns_class.dom.replacement.Element)
-		{
-			prettyIndentation();
+		else if (whitespaceType.equals("indent")){
+			prettyIndentation(writer, indentationLevel);
+		}
+	}
+
+	private void dataPrintSetStrategy(String serializeType, Node node, BufferedWriter writer, int indentationLevel) throws IOException {
+		if (node instanceof edu.jhu.apl.patterns_class.dom.Document){
+			writer.write("<? xml version=\"1.0\" encoding=\"UTF-8\"?>");
+			if (serializeType.equals("pretty"))
+				whitespaceStrategy("newline", writer, indentationLevel);
+			dataPrintSetStrategy(serializeType, ((edu.jhu.apl.patterns_class.dom.replacement.Document )node).getDocumentElement(), writer, indentationLevel);
+		}
+		else if (node instanceof Element){
+			if (serializeType.equals("pretty"))
+				whitespaceStrategy("indent", writer, indentationLevel);
 			writer.write("<" + ((edu.jhu.apl.patterns_class.dom.replacement.Element )node).getTagName());
 
 			int	attrCount	= 0;
 
 			for (java.util.ListIterator i =
-			  ((edu.jhu.apl.patterns_class.dom.NodeList )node.getAttributes()).listIterator(0);
-			  i.hasNext();)
+				 ((edu.jhu.apl.patterns_class.dom.NodeList )node.getAttributes()).listIterator(0);
+				 i.hasNext();)
 			{
 				edu.jhu.apl.patterns_class.dom.replacement.Node	attr =
-				  (edu.jhu.apl.patterns_class.dom.replacement.Node )i.next();
+						(edu.jhu.apl.patterns_class.dom.replacement.Node )i.next();
 
-				serializePretty(attr);
+				//serializePretty(attr);
+				dataPrintSetStrategy(serializeType, attr, writer, indentationLevel);
 				attrCount++;
 			}
 
@@ -66,100 +80,51 @@ public class XMLSerializer
 			if (!((edu.jhu.apl.patterns_class.dom.NodeList )node.getChildNodes()).listIterator(0).hasNext())
 			{
 				writer.write("/>");
-				writer.write("\n");
+				if (serializeType.equals("pretty"))
+					whitespaceStrategy("newline", writer, indentationLevel);
 			}
 			else
 			{
 				writer.write(">");
-				writer.write("\n");
+				if (serializeType.equals("pretty"))
+					whitespaceStrategy("newline", writer, indentationLevel);
 				indentationLevel++;
 
 				for (java.util.ListIterator i =
-				  ((edu.jhu.apl.patterns_class.dom.NodeList )node.getChildNodes()).listIterator(0);
-				  i.hasNext();)
+					 ((edu.jhu.apl.patterns_class.dom.NodeList )node.getChildNodes()).listIterator(0);
+					 i.hasNext();)
 				{
 					edu.jhu.apl.patterns_class.dom.replacement.Node	child =
-					  (edu.jhu.apl.patterns_class.dom.replacement.Node )i.next();
+							(edu.jhu.apl.patterns_class.dom.replacement.Node )i.next();
 
 					if (child instanceof edu.jhu.apl.patterns_class.dom.replacement.Element ||
-					  child instanceof edu.jhu.apl.patterns_class.dom.replacement.Text)
-						serializePretty(child);
+							child instanceof edu.jhu.apl.patterns_class.dom.replacement.Text)
+						//serializePretty(child);
+						dataPrintSetStrategy(serializeType, child, writer, indentationLevel);
 				}
 
 				indentationLevel--;
-				prettyIndentation();
+				if (serializeType.equals("pretty"))
+					whitespaceStrategy("indent", writer, indentationLevel);
 				writer.write("</" + ((edu.jhu.apl.patterns_class.dom.replacement.Element )node).getTagName() + ">");
-				writer.write("\n");
+				if (serializeType.equals("pretty"))
+					whitespaceStrategy("newline", writer, indentationLevel);
 			}
 		}
-		else if (node instanceof edu.jhu.apl.patterns_class.dom.replacement.Attr)
-		{
+		else if (node instanceof Attr){
 			writer.write(" " + ((edu.jhu.apl.patterns_class.dom.replacement.Attr )node).getName() + "=\"" +
-			  ((edu.jhu.apl.patterns_class.dom.replacement.Attr )node).getValue() + "\"");
+					((edu.jhu.apl.patterns_class.dom.replacement.Attr )node).getValue() + "\"");
 		}
-		else if (node instanceof edu.jhu.apl.patterns_class.dom.replacement.Text)
-		{
-			prettyIndentation();
+		else if (node instanceof Text){
+			if (serializeType.equals("pretty"))
+				whitespaceStrategy("indent", writer, indentationLevel);
 			writer.write(((edu.jhu.apl.patterns_class.dom.replacement.Text )node).getData());
-			writer.write("\n");
+			if (serializeType.equals("pretty"))
+				whitespaceStrategy("newline", writer, indentationLevel);
 		}
 	}
 
-	public void serializeMinimal(edu.jhu.apl.patterns_class.dom.replacement.Node node) throws java.io.IOException
-	{
-		if (node instanceof edu.jhu.apl.patterns_class.dom.Document)
-		{
-			writer.write("<? xml version=\"1.0\" encoding=\"UTF-8\"?>");
-			serializeMinimal(((edu.jhu.apl.patterns_class.dom.replacement.Document )node).getDocumentElement());
-		}
-		else if (node instanceof edu.jhu.apl.patterns_class.dom.replacement.Element)
-		{
-			writer.write("<" + ((edu.jhu.apl.patterns_class.dom.replacement.Element )node).getTagName());
-
-			for (java.util.ListIterator i =
-			  ((edu.jhu.apl.patterns_class.dom.NodeList )node.getAttributes()).listIterator(0);
-			  i.hasNext();)
-			{
-				edu.jhu.apl.patterns_class.dom.replacement.Node	attr =
-				  (edu.jhu.apl.patterns_class.dom.replacement.Node )i.next();
-
-				serializeMinimal(attr);
-			}
-
-			if (!((edu.jhu.apl.patterns_class.dom.NodeList )node.getChildNodes()).listIterator(0).hasNext())
-				writer.write("/>");
-			else
-			{
-				writer.write(">");
-
-				for (java.util.ListIterator i =
-				  ((edu.jhu.apl.patterns_class.dom.NodeList )node.getChildNodes()).listIterator(0);
-				  i.hasNext();)
-				{
-					edu.jhu.apl.patterns_class.dom.replacement.Node	child =
-					  (edu.jhu.apl.patterns_class.dom.replacement.Node )i.next();
-
-					if (child instanceof edu.jhu.apl.patterns_class.dom.replacement.Element ||
-					  child instanceof edu.jhu.apl.patterns_class.dom.replacement.Text)
-						serializeMinimal(child);
-				}
-
-				writer.write("</" + ((edu.jhu.apl.patterns_class.dom.replacement.Element )node).getTagName() + ">");
-			}
-		}
-		else if (node instanceof edu.jhu.apl.patterns_class.dom.replacement.Attr)
-		{
-			writer.write(" " + ((edu.jhu.apl.patterns_class.dom.replacement.Attr )node).getName() + "=\"" +
-			  ((edu.jhu.apl.patterns_class.dom.replacement.Attr )node).getValue() + "\"");
-		}
-		else if (node instanceof edu.jhu.apl.patterns_class.dom.replacement.Text)
-		{
-			writer.write(((edu.jhu.apl.patterns_class.dom.replacement.Text )node).getData());
-		}
-	}
-
-	public static void main(String args[])
-	{
+	public static void main(String args[]) throws FileNotFoundException {
 		if (args.length < 2)
 		{
 			System.out.println("No output filenames provided.");
@@ -203,16 +168,18 @@ public class XMLSerializer
 		child	= document.createDOM("element", "element");
 		root.appendChild(child);
 
+		//BufferedWriter writer		= new java.io.BufferedWriter(new java.io.OutputStreamWriter(new java.io.FileOutputStream(args[0])));
+
 		//
 		// Serialize
 		//
 		try
 		{
 			XMLSerializer	xmlSerializer	= new XMLSerializer(args[0]);
-			xmlSerializer.serializePretty(document);
+			xmlSerializer.serialize("pretty", document, xmlSerializer.writer);
 			xmlSerializer.close();
 			xmlSerializer	= new XMLSerializer(args[1]);
-			xmlSerializer.serializeMinimal(document);
+			xmlSerializer.serialize("minimal", document, xmlSerializer.writer);
 			xmlSerializer.close();
 		}
 		catch (IOException e)

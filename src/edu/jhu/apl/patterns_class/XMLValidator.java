@@ -1,5 +1,10 @@
 package edu.jhu.apl.patterns_class;
 
+import edu.jhu.apl.patterns_class.dom.decorators.CanAddAttribute;
+import edu.jhu.apl.patterns_class.dom.decorators.CanAddElement;
+import edu.jhu.apl.patterns_class.dom.decorators.CanAddText;
+import edu.jhu.apl.patterns_class.dom.decorators.DOMSourceDecorator;
+
 public class XMLValidator
 {
 	private java.util.Vector<ValidChildren>	schema	= new java.util.Vector<ValidChildren>();
@@ -97,6 +102,7 @@ public class XMLValidator
 		schemaElement.addValidChild("attribute", true);
 		schemaElement.addValidChild("attribute2", true);
 		schemaElement.setCanHaveText(true);
+		DOMSourceDecorator checker = null;
 
 		edu.jhu.apl.patterns_class.dom.replacement.Document	document	=
 		  new edu.jhu.apl.patterns_class.dom.Document();
@@ -109,96 +115,94 @@ public class XMLValidator
 			root	= document.createDOM("element", "document");
 			document.appendChild(root);
 		}
-		else
-		{
+		else {
 			System.out.println("Attempted invalid schema operation.");
 			System.exit(0);
 		}
 
-		if (xmlValidator.canAddElement(root, "element"))
-		{
-			child	= document.createDOM("element", "element");
+		child	= document.createDOM("element", "element");
+		checker = new CanAddElement(new CanAddAttribute(child, "attribute"), root, "element");
 
-			if (xmlValidator.canAddAttribute(child, "attribute"))
-			{
-				attr	= document.createDOM("attr", "attribute");
-				attr.setValue("attribute value");
-				child.setAttributeNode(attr);
-			}
-			else
-			{
-				System.out.println("Attempted invalid schema operation.");
-				System.exit(0);
-			}
-
-			root.appendChild(child);
-		}
-		else
+		if(checker.canAdd())
 		{
-			System.out.println("Attempted invalid schema operation.");
-			System.exit(0);
+			attr	= document.createDOM("attr", "attribute");
+			attr.setValue("attribute value");
+			child.setAttributeNode(attr);
 		}
 
-		if (xmlValidator.canAddElement(root, "element"))
-		{
+		checker = new CanAddElement(root, "element");
+
+		if (checker.canAdd()){
 			child	= document.createDOM("element", "element");
 			root.appendChild(child);
 		}
-		else
-		{
-			System.out.println("Attempted invalid schema operation.");
-			System.exit(0);
-		}
 
-		if (xmlValidator.canAddElement(root, "element"))
-		{
-			child	= document.createDOM("element", "element");
+		child	= document.createDOM("element", "element");
+		checker = new CanAddElement(new CanAddAttribute(new CanAddText(child), child, "attribute"), root, "element");
 
-			if (xmlValidator.canAddAttribute(child, "attribute"))
-				child.setAttribute("attribute", "attribute value");
-			else
-			{
-				System.out.println("Attempted invalid schema operation.");
-				System.exit(0);
-			}
-
-			if (xmlValidator.canAddAttribute(child, "attribute2"))
-				child.setAttribute("attribute2", "attribute2 value");
-			else
-			{
-				System.out.println("Attempted invalid schema operation.");
-				System.exit(0);
-			}
-
-			if (xmlValidator.canAddText(child))
-			{
-				edu.jhu.apl.patterns_class.dom.replacement.Node text = document.createDOM("text", "Element Value");
-				child.appendChild(text);
-			}
-			else
-			{
-				System.out.println("Attempted invalid schema operation.");
-				System.exit(0);
-			}
-
+		if(checker.canAdd()){
+			child.setAttribute("attribute", "attribute value");
+			child.setAttribute("attribute2", "attribute2 value");
+			edu.jhu.apl.patterns_class.dom.replacement.Node text = document.createDOM("text", "Element Value");
+			child.appendChild(text);
 			root.appendChild(child);
 		}
-		else
-		{
-			System.out.println("Attempted invalid schema operation.");
-			System.exit(0);
-		}
 
-		if (xmlValidator.canAddElement(root, "element"))
-		{
+//		if (xmlValidator.canAddElement(root, "element"))
+//		{
+//			child	= document.createDOM("element", "element");
+//
+//			if (xmlValidator.canAddAttribute(child, "attribute"))
+//				child.setAttribute("attribute", "attribute value");
+//			else
+//			{
+//				System.out.println("Attempted invalid schema operation.");
+//				System.exit(0);
+//			}
+//
+//			if (xmlValidator.canAddAttribute(child, "attribute2"))
+//				child.setAttribute("attribute2", "attribute2 value");
+//			else
+//			{
+//				System.out.println("Attempted invalid schema operation.");
+//				System.exit(0);
+//			}
+//
+//			if (xmlValidator.canAddText(child))
+//			{
+//				edu.jhu.apl.patterns_class.dom.replacement.Node text = document.createDOM("text", "Element Value");
+//				child.appendChild(text);
+//			}
+//			else
+//			{
+//				System.out.println("Attempted invalid schema operation.");
+//				System.exit(0);
+//			}
+//
+//			root.appendChild(child);
+//		}
+//		else
+//		{
+//			System.out.println("Attempted invalid schema operation.");
+//			System.exit(0);
+//		}
+		checker = new CanAddElement(root, "element");
+
+		if(checker.canAdd()){
 			child	= document.createDOM("element", "element");
 			root.appendChild(child);
 		}
-		else
-		{
-			System.out.println("Attempted invalid schema operation.");
-			System.exit(0);
-		}
+
+//		if (xmlValidator.canAddElement(root, "element"))
+//		{
+//			child	= document.createDOM("element", "element");
+//			root.appendChild(child);
+//		}
+//		else
+//		{
+//			System.out.println("Attempted invalid schema operation.");
+//			System.exit(0);
+//		}
 
 		//
 		// Serialize
@@ -206,7 +210,7 @@ public class XMLValidator
 		try
 		{
 			XMLSerializer	xmlSerializer	= new XMLSerializer(args[0]);
-			xmlSerializer.serializePretty(document);
+			xmlSerializer.serialize("pretty", document, xmlSerializer.writer);
 			xmlSerializer.close();
 		}
 		catch (java.io.IOException e)
