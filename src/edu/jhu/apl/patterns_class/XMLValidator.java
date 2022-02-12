@@ -1,8 +1,8 @@
 package edu.jhu.apl.patterns_class;
 
-import edu.jhu.apl.patterns_class.dom.decorators.CanAddAttribute;
-import edu.jhu.apl.patterns_class.dom.decorators.CanAddElement;
-import edu.jhu.apl.patterns_class.dom.decorators.CanAddText;
+import edu.jhu.apl.patterns_class.dom.decorators.CanAddAttributeDecorator;
+import edu.jhu.apl.patterns_class.dom.decorators.CanAddElementDecorator;
+import edu.jhu.apl.patterns_class.dom.decorators.CanAddTextDecorator;
 import edu.jhu.apl.patterns_class.dom.decorators.DOMSourceDecorator;
 
 public class XMLValidator
@@ -35,29 +35,30 @@ public class XMLValidator
 
 	public boolean canRootElement(String newElement)
 	{
-		return canAddElement(null, newElement);
+		DOMSourceDecorator checker = new CanAddElementDecorator(null, newElement);
+		return checker.canAdd();
 	}
 
-	public boolean canAddElement(edu.jhu.apl.patterns_class.dom.replacement.Node element, String newElement)
-	{
-		ValidChildren	schemaElement	= findSchemaElement(element == null ? null : element.getTagName());
+//	public boolean canAddElement(edu.jhu.apl.patterns_class.dom.replacement.Node element, String newElement)
+//	{
+//		ValidChildren	schemaElement	= findSchemaElement(element == null ? null : element.getTagName());
+//
+//		return schemaElement == null ? true : schemaElement.childIsValid(newElement, false);
+//	}
 
-		return schemaElement == null ? true : schemaElement.childIsValid(newElement, false);
-	}
+//	public boolean canAddText(edu.jhu.apl.patterns_class.dom.replacement.Node element)
+//	{
+//		ValidChildren	schemaElement	= findSchemaElement(element.getTagName());
+//
+//		return schemaElement == null ? true : schemaElement.canHaveText();
+//	}
 
-	public boolean canAddText(edu.jhu.apl.patterns_class.dom.replacement.Node element)
-	{
-		ValidChildren	schemaElement	= findSchemaElement(element.getTagName());
-
-		return schemaElement == null ? true : schemaElement.canHaveText();
-	}
-
-	public boolean canAddAttribute(edu.jhu.apl.patterns_class.dom.replacement.Node element, String newAttribute)
-	{
-		ValidChildren	schemaElement	= findSchemaElement(element.getTagName());
-
-		return schemaElement == null ? true : schemaElement.childIsValid(newAttribute, true);
-	}
+//	public boolean canAddAttribute(edu.jhu.apl.patterns_class.dom.replacement.Node element, String newAttribute)
+//	{
+//		ValidChildren	schemaElement	= findSchemaElement(element.getTagName());
+//
+//		return schemaElement == null ? true : schemaElement.childIsValid(newAttribute, true);
+//	}
 
 	//
 	// Optional for schema implementation:
@@ -121,7 +122,7 @@ public class XMLValidator
 		}
 
 		child	= document.createDOM("element", "element");
-		checker = new CanAddElement(new CanAddAttribute(child, "attribute"), root, "element");
+		checker = new CanAddElementDecorator(new CanAddAttributeDecorator(child, "attribute"), root, "element");
 
 		if(checker.canAdd())
 		{
@@ -130,7 +131,7 @@ public class XMLValidator
 			child.setAttributeNode(attr);
 		}
 
-		checker = new CanAddElement(root, "element");
+		checker = new CanAddElementDecorator(root, "element");
 
 		if (checker.canAdd()){
 			child	= document.createDOM("element", "element");
@@ -138,7 +139,7 @@ public class XMLValidator
 		}
 
 		child	= document.createDOM("element", "element");
-		checker = new CanAddElement(new CanAddAttribute(new CanAddText(child), child, "attribute"), root, "element");
+		checker = new CanAddElementDecorator(new CanAddAttributeDecorator(new CanAddTextDecorator(child), child, "attribute"), root, "element");
 
 		if(checker.canAdd()){
 			child.setAttribute("attribute", "attribute value");
@@ -148,61 +149,12 @@ public class XMLValidator
 			root.appendChild(child);
 		}
 
-//		if (xmlValidator.canAddElement(root, "element"))
-//		{
-//			child	= document.createDOM("element", "element");
-//
-//			if (xmlValidator.canAddAttribute(child, "attribute"))
-//				child.setAttribute("attribute", "attribute value");
-//			else
-//			{
-//				System.out.println("Attempted invalid schema operation.");
-//				System.exit(0);
-//			}
-//
-//			if (xmlValidator.canAddAttribute(child, "attribute2"))
-//				child.setAttribute("attribute2", "attribute2 value");
-//			else
-//			{
-//				System.out.println("Attempted invalid schema operation.");
-//				System.exit(0);
-//			}
-//
-//			if (xmlValidator.canAddText(child))
-//			{
-//				edu.jhu.apl.patterns_class.dom.replacement.Node text = document.createDOM("text", "Element Value");
-//				child.appendChild(text);
-//			}
-//			else
-//			{
-//				System.out.println("Attempted invalid schema operation.");
-//				System.exit(0);
-//			}
-//
-//			root.appendChild(child);
-//		}
-//		else
-//		{
-//			System.out.println("Attempted invalid schema operation.");
-//			System.exit(0);
-//		}
-		checker = new CanAddElement(root, "element");
+		checker = new CanAddElementDecorator(root, "element");
 
 		if(checker.canAdd()){
 			child	= document.createDOM("element", "element");
 			root.appendChild(child);
 		}
-
-//		if (xmlValidator.canAddElement(root, "element"))
-//		{
-//			child	= document.createDOM("element", "element");
-//			root.appendChild(child);
-//		}
-//		else
-//		{
-//			System.out.println("Attempted invalid schema operation.");
-//			System.exit(0);
-//		}
 
 		//
 		// Serialize

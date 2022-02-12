@@ -1,9 +1,13 @@
+////////////////////////////////////////////////////////////////////////////
+// Concrete Decorator for Validating if Text can be added
+////////////////////////////////////////////////////////////////////////////
+
 package edu.jhu.apl.patterns_class.dom.decorators;
 
 import edu.jhu.apl.patterns_class.dom.replacement.Node;
 
-public class CanAddText extends DOMSourceDecorator{
-    public CanAddText(Node dom) {
+public class CanAddTextDecorator extends DOMSourceDecorator{
+    public CanAddTextDecorator(Node dom) {
         super(dom);
     }
 

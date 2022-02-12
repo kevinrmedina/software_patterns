@@ -1,14 +1,18 @@
+////////////////////////////////////////////////////////////////////////////
+// Concrete Decorator for Validating if Attributes can be added
+////////////////////////////////////////////////////////////////////////////
+
 package edu.jhu.apl.patterns_class.dom.decorators;
 
 import edu.jhu.apl.patterns_class.dom.replacement.Node;
 
-public class CanAddAttribute extends DOMSourceDecorator{
+public class CanAddAttributeDecorator extends DOMSourceDecorator{
 
 
-    public CanAddAttribute(DOMSource source, Node dom, String text) {
+    public CanAddAttributeDecorator(DOMSource source, Node dom, String text) {
         super(source, dom, text);
     }
-    public CanAddAttribute(Node dom, String text) {
+    public CanAddAttributeDecorator(Node dom, String text) {
         super(dom, text);
     }
 
