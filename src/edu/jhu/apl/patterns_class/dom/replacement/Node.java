@@ -58,6 +58,4 @@ public interface Node
 	String getTagName();
 
 	void setParent(Element element);
-
-	boolean canAdd();
 }

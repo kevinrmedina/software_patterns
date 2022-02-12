@@ -39,6 +39,7 @@ public class XMLSerializer
 		dataPrintSetStrategy(serializeType, node, writer, 0);
 	}
 
+	// Strategizing whitespace adding to the xml document
 	private void whitespaceStrategy(String whitespaceType, BufferedWriter writer, int indentationLevel) throws IOException {
 		if (whitespaceType.equals("newline")){
 			writer.write("\n");
@@ -48,6 +49,7 @@ public class XMLSerializer
 		}
 	}
 
+	// Strategizing how to print the xml document, with or without indentation and whitespace
 	private void dataPrintSetStrategy(String serializeType, Node node, BufferedWriter writer, int indentationLevel) throws IOException {
 		if (node instanceof edu.jhu.apl.patterns_class.dom.Document){
 			writer.write("<? xml version=\"1.0\" encoding=\"UTF-8\"?>");
@@ -69,7 +71,6 @@ public class XMLSerializer
 				edu.jhu.apl.patterns_class.dom.replacement.Node	attr =
 						(edu.jhu.apl.patterns_class.dom.replacement.Node )i.next();
 
-				//serializePretty(attr);
 				dataPrintSetStrategy(serializeType, attr, writer, indentationLevel);
 				attrCount++;
 			}
@@ -167,8 +168,6 @@ public class XMLSerializer
 
 		child	= document.createDOM("element", "element");
 		root.appendChild(child);
-
-		//BufferedWriter writer		= new java.io.BufferedWriter(new java.io.OutputStreamWriter(new java.io.FileOutputStream(args[0])));
 
 		//
 		// Serialize
