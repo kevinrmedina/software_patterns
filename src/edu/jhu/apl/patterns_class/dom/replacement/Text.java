@@ -21,4 +21,9 @@ public interface Text extends Node
 	public Text replaceWholeText(String content);
 	public String getWholeText();
 	public boolean isElementContentWhitespace();
+
+	Node getNext();
+	boolean hasNext();
+	Node getPrevious();
+	boolean hasPrevious();
 }

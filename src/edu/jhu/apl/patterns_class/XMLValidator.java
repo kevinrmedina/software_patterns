@@ -4,6 +4,10 @@ import edu.jhu.apl.patterns_class.dom.decorators.CanAddAttributeDecorator;
 import edu.jhu.apl.patterns_class.dom.decorators.CanAddElementDecorator;
 import edu.jhu.apl.patterns_class.dom.decorators.CanAddTextDecorator;
 import edu.jhu.apl.patterns_class.dom.decorators.DOMSourceDecorator;
+import edu.jhu.apl.patterns_class.dom.replacement.Document;
+import edu.jhu.apl.patterns_class.dom.replacement.Node;
+
+import java.io.IOException;
 
 public class XMLValidator
 {
@@ -38,27 +42,6 @@ public class XMLValidator
 		DOMSourceDecorator checker = new CanAddElementDecorator(null, newElement);
 		return checker.canAdd();
 	}
-
-//	public boolean canAddElement(edu.jhu.apl.patterns_class.dom.replacement.Node element, String newElement)
-//	{
-//		ValidChildren	schemaElement	= findSchemaElement(element == null ? null : element.getTagName());
-//
-//		return schemaElement == null ? true : schemaElement.childIsValid(newElement, false);
-//	}
-
-//	public boolean canAddText(edu.jhu.apl.patterns_class.dom.replacement.Node element)
-//	{
-//		ValidChildren	schemaElement	= findSchemaElement(element.getTagName());
-//
-//		return schemaElement == null ? true : schemaElement.canHaveText();
-//	}
-
-//	public boolean canAddAttribute(edu.jhu.apl.patterns_class.dom.replacement.Node element, String newAttribute)
-//	{
-//		ValidChildren	schemaElement	= findSchemaElement(element.getTagName());
-//
-//		return schemaElement == null ? true : schemaElement.childIsValid(newAttribute, true);
-//	}
 
 	//
 	// Optional for schema implementation:
@@ -105,15 +88,15 @@ public class XMLValidator
 		schemaElement.setCanHaveText(true);
 		DOMSourceDecorator checker = null;
 
-		edu.jhu.apl.patterns_class.dom.replacement.Document	document	=
+		Document	document	=
 		  new edu.jhu.apl.patterns_class.dom.Document();
-		edu.jhu.apl.patterns_class.dom.replacement.Node	root		= null;
-		edu.jhu.apl.patterns_class.dom.replacement.Node	child		= null;
-		edu.jhu.apl.patterns_class.dom.replacement.Node		attr		= null;
+		Node	root		= null;
+		Node	child		= null;
+		Node		attr		= null;
 
 		if (xmlValidator.canRootElement("document"))
 		{
-			root	= document.createDOM("element", "document");
+			root	= document.createDOM("element", "document", null);
 			document.appendChild(root);
 		}
 		else {
@@ -121,12 +104,12 @@ public class XMLValidator
 			System.exit(0);
 		}
 
-		child	= document.createDOM("element", "element");
+		child	= document.createDOM("element", "element", null);
 		checker = new CanAddElementDecorator(new CanAddAttributeDecorator(child, "attribute"), root, "element");
 
 		if(checker.canAdd())
 		{
-			attr	= document.createDOM("attr", "attribute");
+			attr	= document.createDOM("attr", "attribute", child);
 			attr.setValue("attribute value");
 			child.setAttributeNode(attr);
 		}
@@ -134,17 +117,17 @@ public class XMLValidator
 		checker = new CanAddElementDecorator(root, "element");
 
 		if (checker.canAdd()){
-			child	= document.createDOM("element", "element");
+			child	= document.createDOM("element", "element", null);
 			root.appendChild(child);
 		}
 
-		child	= document.createDOM("element", "element");
+		child	= document.createDOM("element", "element", null);
 		checker = new CanAddElementDecorator(new CanAddAttributeDecorator(new CanAddTextDecorator(child), child, "attribute"), root, "element");
 
 		if(checker.canAdd()){
 			child.setAttribute("attribute", "attribute value");
 			child.setAttribute("attribute2", "attribute2 value");
-			edu.jhu.apl.patterns_class.dom.replacement.Node text = document.createDOM("text", "Element Value");
+			Node text = document.createDOM("text", "Element Value", null);
 			child.appendChild(text);
 			root.appendChild(child);
 		}
@@ -152,7 +135,7 @@ public class XMLValidator
 		checker = new CanAddElementDecorator(root, "element");
 
 		if(checker.canAdd()){
-			child	= document.createDOM("element", "element");
+			child	= document.createDOM("element", "element", null);
 			root.appendChild(child);
 		}
 
@@ -165,7 +148,7 @@ public class XMLValidator
 			xmlSerializer.serialize("pretty", document, xmlSerializer.writer);
 			xmlSerializer.close();
 		}
-		catch (java.io.IOException e)
+		catch (IOException e)
 		{
 			System.out.println("Error writing file.");
 			e.printStackTrace();

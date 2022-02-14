@@ -112,4 +112,27 @@ public class Text extends Node implements edu.jhu.apl.patterns_class.dom.replace
 	public String getWholeText() { return null; }
 	public boolean isElementContentWhitespace() { return false; }
 	public void setParent(Element element) {}
+	public boolean hasParent(){
+		if (getParentNode() != null){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+	public Node getNext(){
+		return null;
+	}
+
+	public boolean hasNext(){
+		return false;
+	}
+
+	public edu.jhu.apl.patterns_class.dom.replacement.Node getPrevious(){
+		return getParentNode();
+	}
+
+	public boolean hasPrevious(){
+		return hasParent();
+	}
 }

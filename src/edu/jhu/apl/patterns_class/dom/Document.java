@@ -14,7 +14,7 @@ public class Document extends Node implements edu.jhu.apl.patterns_class.dom.rep
 
 
 // Replaces the individual create functions, this acts as the Creator functions
-	public edu.jhu.apl.patterns_class.dom.replacement.Node createDOM(String domType, String str){
+	public edu.jhu.apl.patterns_class.dom.replacement.Node createDOM(String domType, String str, edu.jhu.apl.patterns_class.dom.replacement.Node parent){
 		if(domType.equals("element")){
 			return new Element(str, this);
 		}
@@ -22,14 +22,14 @@ public class Document extends Node implements edu.jhu.apl.patterns_class.dom.rep
 			return new Text(str, this);
 		}
 		else if (domType.equals("attr")){
-			return new Attr(str, this);
+			return new Attr(str, this, parent);
 		}
 		else
 			return null;
 
 	}
 
-	public edu.jhu.apl.patterns_class.dom.replacement.Node createDOM(String domType, String str, Document doc){
+	public edu.jhu.apl.patterns_class.dom.replacement.Node createDOM(String domType, String str, Document doc, edu.jhu.apl.patterns_class.dom.replacement.Node parent){
 		if(domType.equals("element")){
 			return new Element(str, doc);
 		}
@@ -37,20 +37,20 @@ public class Document extends Node implements edu.jhu.apl.patterns_class.dom.rep
 			return new Text(str, doc);
 		}
 		else if (domType.equals("attr")){
-			return new Attr(str, doc);
+			return new Attr(str, doc, parent);
 		}
 		else
 			return null;
 	}
 
-	public edu.jhu.apl.patterns_class.dom.replacement.Node createDOM(String domType, String str, String value, Document doc){
+	public edu.jhu.apl.patterns_class.dom.replacement.Node createDOM(String domType, String str, String value, Document doc, edu.jhu.apl.patterns_class.dom.replacement.Node parent){
 		if (domType.equals("attr"))
-			return new Attr(str, value, doc);
+			return new Attr(str, value, doc, parent);
 		else
 			return null;
 	}
 
-	public edu.jhu.apl.patterns_class.dom.replacement.Element getDocumentElement()
+	public edu.jhu.apl.patterns_class.dom.replacement.Node getDocumentElement()
 	{
 		for (java.util.ListIterator i = ((NodeList )getChildNodes()).listIterator(0); i.hasNext();)
 		{
@@ -58,10 +58,31 @@ public class Document extends Node implements edu.jhu.apl.patterns_class.dom.rep
 			  (edu.jhu.apl.patterns_class.dom.replacement.Node )i.next();
 
 			if (element instanceof edu.jhu.apl.patterns_class.dom.replacement.Element)
-				return (edu.jhu.apl.patterns_class.dom.replacement.Element )element;
+				return (edu.jhu.apl.patterns_class.dom.replacement.Node )element;
 		}
 
 		return null;
+	}
+
+	public edu.jhu.apl.patterns_class.dom.replacement.Node getNext(){
+		return getDocumentElement();
+	}
+
+	public boolean hasNext(){
+		if (getDocumentElement() != null){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+
+	public Node getPrevious(){
+		return null;
+	}
+
+	public boolean hasPrevious(){
+		return false;
 	}
 
 	//

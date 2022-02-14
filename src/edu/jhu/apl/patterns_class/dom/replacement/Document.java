@@ -8,8 +8,8 @@ public interface Document extends Node
 	//public Element createElement(String tagName) throws org.w3c.dom.DOMException;
 	//public Text createTextNode(String data);
 	//public Attr createAttribute(String name) throws org.w3c.dom.DOMException;
-	public Node createDOM(String domType, String str);
-	public Element getDocumentElement();
+	public Node createDOM(String domType, String str, Node parent);
+	public Node getDocumentElement();
 
 	//
 	// Unimplemented Document members.
@@ -42,4 +42,9 @@ public interface Document extends Node
 	public boolean getXmlStandalone();
 	public String getXmlEncoding();
 	public String getInputEncoding();
+
+	Node getNext();
+	boolean hasNext();
+	Node getPrevious();
+	boolean hasPrevious();
 }

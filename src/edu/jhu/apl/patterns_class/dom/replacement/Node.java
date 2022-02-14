@@ -58,4 +58,10 @@ public interface Node
 	String getTagName();
 
 	void setParent(Element element);
+
+	Node getNext();
+	boolean hasNext();
+	Node getPrevious();
+	boolean hasPrevious();
+
 }

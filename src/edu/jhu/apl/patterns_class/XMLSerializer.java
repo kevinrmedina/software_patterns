@@ -10,7 +10,6 @@ public class XMLSerializer
 {
 	java.io.File		file			= null;
 	java.io.BufferedWriter	writer			= null;
-	//int			indentationLevel	= 0;
 
 	public XMLSerializer(String filename) throws java.io.FileNotFoundException
 	{
@@ -147,26 +146,26 @@ public class XMLSerializer
 		//
 		Document	document	=
 		  new edu.jhu.apl.patterns_class.dom.Document();
-		Node	root		= document.createDOM("element", "document");
+		Node	root		= document.createDOM("element", "document", null);
 		document.appendChild(root);
 
-		Node	child		= document.createDOM("element", "element");
-		Node		attr		= document.createDOM("attr", "attribute");
+		Node	child		= document.createDOM("element", "element", null);
+		Node		attr		= document.createDOM("attr", "attribute", null);
 		attr.setValue("attribute value");
 		child.setAttributeNode(attr);
 		root.appendChild(child);
 
-		child	= document.createDOM("element", "element");
+		child	= document.createDOM("element", "element", null);
 		root.appendChild(child);
 
-		child	= document.createDOM("element", "element");
+		child	= document.createDOM("element", "element", null);
 		child.setAttribute("attribute", "attribute value");
 		child.setAttribute("attribute2", "attribute2 value");
-		edu.jhu.apl.patterns_class.dom.replacement.Node		text		= document.createDOM("text", "Element Value");
+		edu.jhu.apl.patterns_class.dom.replacement.Node		text		= document.createDOM("text", "Element Value", null);
 		child.appendChild(text);
 		root.appendChild(child);
 
-		child	= document.createDOM("element", "element");
+		child	= document.createDOM("element", "element", null);
 		root.appendChild(child);
 
 		//

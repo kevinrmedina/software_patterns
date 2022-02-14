@@ -16,4 +16,9 @@ public interface Attr extends Node
 	public boolean getSpecified();
 	public boolean isId();
 	public org.w3c.dom.TypeInfo getSchemaTypeInfo();
+
+	Node getNext();
+	boolean hasNext();
+	Node getPrevious();
+	boolean hasPrevious();
 }

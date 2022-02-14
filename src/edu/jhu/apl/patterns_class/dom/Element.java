@@ -1,9 +1,16 @@
 package edu.jhu.apl.patterns_class.dom;
 
 
+import edu.jhu.apl.patterns_class.dom.iterator.ConcreteIterator;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Element extends Node implements edu.jhu.apl.patterns_class.dom.replacement.Element
 {
 	private NamedNodeMap		attributes	= null;
+
+	private ConcreteIterator childDOM = new ConcreteIterator(this);
 
 	Element(String tagName, Document document)
 	{
@@ -123,8 +130,9 @@ public class Element extends Node implements edu.jhu.apl.patterns_class.dom.repl
 
 		edu.jhu.apl.patterns_class.dom.replacement.Node	attribute;
 		Document doc = new edu.jhu.apl.patterns_class.dom.Document();
-		attributes.addLast(attribute = doc.createDOM("attr", name, value, (Document )getOwnerDocument()));
+		attributes.addLast(attribute = doc.createDOM("attr", name, value, (Document )getOwnerDocument(), this));
 		attribute.setParent(this);
+		childDOM.addDOM(attribute);
 	}
 	public edu.jhu.apl.patterns_class.dom.replacement.Attr
 	  setAttributeNode(edu.jhu.apl.patterns_class.dom.replacement.Attr newAttr)
@@ -185,4 +193,30 @@ public class Element extends Node implements edu.jhu.apl.patterns_class.dom.repl
 	//
 	public edu.jhu.apl.patterns_class.dom.replacement.NamedNodeMap getAttributes()	{ return attributes; }
 	public boolean hasAttributes()			{ return attributes.getLength() > 0; }
+
+	public edu.jhu.apl.patterns_class.dom.replacement.Node getNext(){
+		return getAttributes().item(0);
+	}
+
+	public boolean hasNext(){
+		if(hasAttributes()){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+
+	public edu.jhu.apl.patterns_class.dom.replacement.Node getPrevious(){
+		return getParentNode();
+	}
+
+	public boolean hasPrevious(){
+		if(getParentNode() != null){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
 }

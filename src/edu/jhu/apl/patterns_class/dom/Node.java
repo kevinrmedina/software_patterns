@@ -161,6 +161,36 @@ public class Node implements edu.jhu.apl.patterns_class.dom.replacement.Node
 	public String getTagName() {return null;}
 	public void setParent(Element element) {}
 
+	@Override
+	public edu.jhu.apl.patterns_class.dom.replacement.Node getNext() {
+		return getFirstChild();
+	}
+
+	@Override
+	public boolean hasNext() {
+		if(getChildNodes() != null){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+
+	@Override
+	public edu.jhu.apl.patterns_class.dom.replacement.Node getPrevious() {
+		return getParentNode();
+	}
+
+	@Override
+	public boolean hasPrevious() {
+		if(getParentNode() != null){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+
 	//
 	// Class Members
 	//

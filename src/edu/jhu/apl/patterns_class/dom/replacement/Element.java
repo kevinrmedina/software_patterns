@@ -39,4 +39,9 @@ public interface Element extends Node
 	//
 	public NamedNodeMap getAttributes();
 	public boolean hasAttributes();
+
+	Node getNext();
+	boolean hasNext();
+	Node getPrevious();
+	boolean hasPrevious();
 }
