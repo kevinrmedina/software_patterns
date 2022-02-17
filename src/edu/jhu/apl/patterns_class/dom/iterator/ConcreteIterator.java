@@ -7,9 +7,9 @@ import java.util.List;
 
 public class ConcreteIterator implements Iterator{
 
-    private int currentPosition = 0;
-    private List<Node> domList = new ArrayList<>();
-    private Node dom;
+    public int currentPosition = 0;
+    //private List<Node> domList = new ArrayList<>();
+    public Node dom;
 
     public ConcreteIterator (Node dom) {
         this.dom = dom;
@@ -17,22 +17,30 @@ public class ConcreteIterator implements Iterator{
 
     @Override
     public Node getNext() {
-        currentPosition++;
-        return domList.get(currentPosition - 1);
+        //currentPosition++;
+        return dom.getNext();
     }
 
     @Override
     public boolean hasNext() {
-        return domList.get(currentPosition).hasNext();
+        return dom.hasNext();
     }
 
-    @Override
-    public void reset() {
-        currentPosition = 0;
+    public boolean hasPrevious(){
+        return dom.hasPrevious();
     }
 
-    public void addDOM(Node dom){
-        domList.add(dom);
+    public Node getPrevious(){
+        return dom.getPrevious();
     }
+
+//    @Override
+//    public void reset() {
+//        currentPosition = 0;
+//    }
+
+//    public void addDOM(Node dom){
+//        dom.add(dom);
+//    }
 
 }

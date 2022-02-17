@@ -5,5 +5,5 @@ import edu.jhu.apl.patterns_class.dom.replacement.Node;
 public interface Iterator {
     Node getNext();
     boolean hasNext();
-    void reset();
+    //void reset();
 }

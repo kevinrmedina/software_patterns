@@ -9,8 +9,9 @@ import java.util.List;
 public class Element extends Node implements edu.jhu.apl.patterns_class.dom.replacement.Element
 {
 	private NamedNodeMap		attributes	= null;
-
-	private ConcreteIterator childDOM = new ConcreteIterator(this);
+	private int amountOfChidren = 0;
+	private int currentChild = 0;
+	private edu.jhu.apl.patterns_class.dom.replacement.Node nextChild = null;
 
 	Element(String tagName, Document document)
 	{
@@ -132,7 +133,7 @@ public class Element extends Node implements edu.jhu.apl.patterns_class.dom.repl
 		Document doc = new edu.jhu.apl.patterns_class.dom.Document();
 		attributes.addLast(attribute = doc.createDOM("attr", name, value, (Document )getOwnerDocument(), this));
 		attribute.setParent(this);
-		childDOM.addDOM(attribute);
+		//childDOM.addDOM(attribute);
 	}
 	public edu.jhu.apl.patterns_class.dom.replacement.Attr
 	  setAttributeNode(edu.jhu.apl.patterns_class.dom.replacement.Attr newAttr)
@@ -195,11 +196,25 @@ public class Element extends Node implements edu.jhu.apl.patterns_class.dom.repl
 	public boolean hasAttributes()			{ return attributes.getLength() > 0; }
 
 	public edu.jhu.apl.patterns_class.dom.replacement.Node getNext(){
-		return getAttributes().item(0);
+		if(hasAttributes()){
+			//nextChild = getAttributes().item(currentChild);
+			nextChild = getAttributes().item(0);
+			removeAttributeNode((edu.jhu.apl.patterns_class.dom.replacement.Attr) nextChild);
+			return nextChild;
+		}
+		//nextChild = getChildNodes().item(currentChild);
+		nextChild = getChildNodes().item(0);
+		removeChild(nextChild);
+		//currentChild++;
+		return nextChild;
 	}
 
 	public boolean hasNext(){
+
 		if(hasAttributes()){
+			return true;
+		}
+		else if(hasChildNodes()){
 			return true;
 		}
 		else{
@@ -219,4 +234,5 @@ public class Element extends Node implements edu.jhu.apl.patterns_class.dom.repl
 			return false;
 		}
 	}
+
 }
