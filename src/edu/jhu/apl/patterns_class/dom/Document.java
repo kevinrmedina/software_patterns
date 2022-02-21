@@ -12,6 +12,11 @@ public class Document extends Node implements edu.jhu.apl.patterns_class.dom.rep
 		document	= this;
 	}
 
+	public Document(Document doc){
+		super(null, org.w3c.dom.Node.DOCUMENT_NODE);
+		document	= doc;
+	}
+
 
 // Replaces the individual create functions, this acts as the Creator functions
 	public edu.jhu.apl.patterns_class.dom.replacement.Node createDOM(String domType, String str, edu.jhu.apl.patterns_class.dom.replacement.Node parent){
@@ -65,7 +70,9 @@ public class Document extends Node implements edu.jhu.apl.patterns_class.dom.rep
 	}
 
 	public edu.jhu.apl.patterns_class.dom.replacement.Node getNext(){
-		return getDocumentElement();
+		edu.jhu.apl.patterns_class.dom.replacement.Node element = getDocumentElement();
+		removeChild(element);
+		return element;
 	}
 
 	public boolean hasNext(){

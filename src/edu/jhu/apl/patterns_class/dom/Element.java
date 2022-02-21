@@ -1,11 +1,6 @@
 package edu.jhu.apl.patterns_class.dom;
 
 
-import edu.jhu.apl.patterns_class.dom.iterator.ConcreteIterator;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class Element extends Node implements edu.jhu.apl.patterns_class.dom.replacement.Element
 {
 	private NamedNodeMap		attributes	= null;
