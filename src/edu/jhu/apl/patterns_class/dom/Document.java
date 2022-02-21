@@ -1,7 +1,3 @@
-////////////////////////////////////////////////////////////////////////////////
-// Creator class for different the DOM objects (Elements, Texts, Attributes)
-////////////////////////////////////////////////////////////////////////////////
-
 package edu.jhu.apl.patterns_class.dom;
 
 public class Document extends Node implements edu.jhu.apl.patterns_class.dom.replacement.Document
@@ -12,50 +8,15 @@ public class Document extends Node implements edu.jhu.apl.patterns_class.dom.rep
 		document	= this;
 	}
 
-	public Document(Document doc){
-		super(null, org.w3c.dom.Node.DOCUMENT_NODE);
-		document	= doc;
-	}
-
-
-// Replaces the individual create functions, this acts as the Creator functions
-	public edu.jhu.apl.patterns_class.dom.replacement.Node createDOM(String domType, String str, edu.jhu.apl.patterns_class.dom.replacement.Node parent){
-		if(domType.equals("element")){
-			return new Element(str, this);
-		}
-		else if (domType.equals("text")){
-			return new Text(str, this);
-		}
-		else if (domType.equals("attr")){
-			return new Attr(str, this, parent);
-		}
-		else
-			return null;
-
-	}
-
-	public edu.jhu.apl.patterns_class.dom.replacement.Node createDOM(String domType, String str, Document doc, edu.jhu.apl.patterns_class.dom.replacement.Node parent){
-		if(domType.equals("element")){
-			return new Element(str, doc);
-		}
-		else if (domType.equals("text")){
-			return new Text(str, doc);
-		}
-		else if (domType.equals("attr")){
-			return new Attr(str, doc, parent);
-		}
-		else
-			return null;
-	}
-
-	public edu.jhu.apl.patterns_class.dom.replacement.Node createDOM(String domType, String str, String value, Document doc, edu.jhu.apl.patterns_class.dom.replacement.Node parent){
-		if (domType.equals("attr"))
-			return new Attr(str, value, doc, parent);
-		else
-			return null;
-	}
-
-	public edu.jhu.apl.patterns_class.dom.replacement.Node getDocumentElement()
+	//
+	// Implemented Document members.
+	//
+	public edu.jhu.apl.patterns_class.dom.replacement.Element createElement(String tagName) throws org.w3c.dom.DOMException
+	  {return new Element(tagName,this);}
+	public edu.jhu.apl.patterns_class.dom.replacement.Text createTextNode(String data) { return new Text(data, this); }
+	public edu.jhu.apl.patterns_class.dom.replacement.Attr createAttribute(String name) throws org.w3c.dom.DOMException
+	  { return new Attr(name, this); }
+	public edu.jhu.apl.patterns_class.dom.replacement.Element getDocumentElement()
 	{
 		for (java.util.ListIterator i = ((NodeList )getChildNodes()).listIterator(0); i.hasNext();)
 		{
@@ -63,33 +24,10 @@ public class Document extends Node implements edu.jhu.apl.patterns_class.dom.rep
 			  (edu.jhu.apl.patterns_class.dom.replacement.Node )i.next();
 
 			if (element instanceof edu.jhu.apl.patterns_class.dom.replacement.Element)
-				return (edu.jhu.apl.patterns_class.dom.replacement.Node )element;
+				return (edu.jhu.apl.patterns_class.dom.replacement.Element )element;
 		}
 
 		return null;
-	}
-
-	public edu.jhu.apl.patterns_class.dom.replacement.Node getNext(){
-		edu.jhu.apl.patterns_class.dom.replacement.Node element = getDocumentElement();
-		removeChild(element);
-		return element;
-	}
-
-	public boolean hasNext(){
-		if (getDocumentElement() != null){
-			return true;
-		}
-		else{
-			return false;
-		}
-	}
-
-	public Node getPrevious(){
-		return null;
-	}
-
-	public boolean hasPrevious(){
-		return false;
 	}
 
 	//
@@ -117,17 +55,6 @@ public class Document extends Node implements edu.jhu.apl.patterns_class.dom.rep
 	  { return null; }
 	public edu.jhu.apl.patterns_class.dom.replacement.Element getElementById(String elementId) { return null; }
 	public edu.jhu.apl.patterns_class.dom.replacement.Node cloneNode(boolean deep) { return null; }
-
-
-	public void setValue(String attribute_value) {}
-	public void setAttributeNode(edu.jhu.apl.patterns_class.dom.replacement.Node attr) {}
-	public void setAttribute(String attribute, String attribute_value) {}
-
-	@Override
-	public void setParent(Element element) {
-
-	}
-
 	public edu.jhu.apl.patterns_class.dom.replacement.Node
 	  renameNode(edu.jhu.apl.patterns_class.dom.replacement.Node n, String namespaceURI, String qualifiedName) { return null; }
 	public void normalizeDocument() {}

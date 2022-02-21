@@ -1,12 +1,8 @@
 package edu.jhu.apl.patterns_class.dom;
 
-
 public class Element extends Node implements edu.jhu.apl.patterns_class.dom.replacement.Element
 {
 	private NamedNodeMap		attributes	= null;
-	private int amountOfChidren = 0;
-	private int currentChild = 0;
-	private edu.jhu.apl.patterns_class.dom.replacement.Node nextChild = null;
 
 	Element(String tagName, Document document)
 	{
@@ -62,7 +58,6 @@ public class Element extends Node implements edu.jhu.apl.patterns_class.dom.repl
 	{
 		return getNodeName();
 	}
-
 	public boolean hasAttribute(String name)
 	{
 		for (java.util.ListIterator i = attributes.listIterator(0); i.hasNext();)
@@ -124,11 +119,9 @@ public class Element extends Node implements edu.jhu.apl.patterns_class.dom.repl
 			}
 		}
 
-		edu.jhu.apl.patterns_class.dom.replacement.Node	attribute;
-		Document doc = new edu.jhu.apl.patterns_class.dom.Document();
-		attributes.addLast(attribute = doc.createDOM("attr", name, value, (Document )getOwnerDocument(), this));
+		Attr	attribute;
+		attributes.addLast(attribute = new Attr(name, value, (Document )getOwnerDocument()));
 		attribute.setParent(this);
-		//childDOM.addDOM(attribute);
 	}
 	public edu.jhu.apl.patterns_class.dom.replacement.Attr
 	  setAttributeNode(edu.jhu.apl.patterns_class.dom.replacement.Attr newAttr)
@@ -180,7 +173,6 @@ public class Element extends Node implements edu.jhu.apl.patterns_class.dom.repl
 	public void setIdAttributeNS(String namespaceURI, String localName, boolean isId) {}
 	public void setIdAttribute(String name, boolean isId) {}
 	public org.w3c.dom.TypeInfo getSchemaTypeInfo() { return null; }
-	public void setParent(Element element) {}
 
 
 
@@ -189,45 +181,4 @@ public class Element extends Node implements edu.jhu.apl.patterns_class.dom.repl
 	//
 	public edu.jhu.apl.patterns_class.dom.replacement.NamedNodeMap getAttributes()	{ return attributes; }
 	public boolean hasAttributes()			{ return attributes.getLength() > 0; }
-
-	public edu.jhu.apl.patterns_class.dom.replacement.Node getNext(){
-		if(hasAttributes()){
-			//nextChild = getAttributes().item(currentChild);
-			nextChild = getAttributes().item(0);
-			removeAttributeNode((edu.jhu.apl.patterns_class.dom.replacement.Attr) nextChild);
-			return nextChild;
-		}
-		//nextChild = getChildNodes().item(currentChild);
-		nextChild = getChildNodes().item(0);
-		removeChild(nextChild);
-		//currentChild++;
-		return nextChild;
-	}
-
-	public boolean hasNext(){
-
-		if(hasAttributes()){
-			return true;
-		}
-		else if(hasChildNodes()){
-			return true;
-		}
-		else{
-			return false;
-		}
-	}
-
-	public edu.jhu.apl.patterns_class.dom.replacement.Node getPrevious(){
-		return getParentNode();
-	}
-
-	public boolean hasPrevious(){
-		if(getParentNode() != null){
-			return true;
-		}
-		else{
-			return false;
-		}
-	}
-
 }

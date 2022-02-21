@@ -1,17 +1,10 @@
 package edu.jhu.apl.patterns_class;
 
-import edu.jhu.apl.patterns_class.dom.iterator.DepthFirstIterator;
-import edu.jhu.apl.patterns_class.dom.replacement.*;
-
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ListIterator;
-
 public class XMLSerializer
 {
 	java.io.File		file			= null;
 	java.io.BufferedWriter	writer			= null;
+	int			indentationLevel	= 0;
 
 	public XMLSerializer(String filename) throws java.io.FileNotFoundException
 	{
@@ -24,7 +17,7 @@ public class XMLSerializer
 		writer.close();
 	}
 
-	private void prettyIndentation(BufferedWriter writer, int indentationLevel) throws java.io.IOException
+	private void prettyIndentation() throws java.io.IOException
 	{
 		for (int i = 0; i < indentationLevel; i++)
 			writer.write("\t");
@@ -35,178 +28,132 @@ public class XMLSerializer
 	// Strategize whitespace insertion.
 	// Strategize output stream
 	//
+	public void serializePretty(edu.jhu.apl.patterns_class.dom.replacement.Node node) throws java.io.IOException
+	{
+		if (node instanceof edu.jhu.apl.patterns_class.dom.Document)
+		{
+			writer.write("<? xml version=\"1.0\" encoding=\"UTF-8\"?>");
+			writer.write("\n");
+			serializePretty(((edu.jhu.apl.patterns_class.dom.replacement.Document )node).getDocumentElement());
+		}
+		else if (node instanceof edu.jhu.apl.patterns_class.dom.replacement.Element)
+		{
+			prettyIndentation();
+			writer.write("<" + ((edu.jhu.apl.patterns_class.dom.replacement.Element )node).getTagName());
 
-	public void serialize(String serializeType, Node node, BufferedWriter writer) throws IOException {
-		dataPrintSetStrategyWithIterator(serializeType, node, writer, 0);
-	}
+			int	attrCount	= 0;
 
-	// Strategizing whitespace adding to the xml document
-	private void whitespaceStrategy(String whitespaceType, BufferedWriter writer, int indentationLevel) throws IOException {
-		if (whitespaceType.equals("newline")){
+			for (java.util.ListIterator i =
+			  ((edu.jhu.apl.patterns_class.dom.NodeList )node.getAttributes()).listIterator(0);
+			  i.hasNext();)
+			{
+				edu.jhu.apl.patterns_class.dom.replacement.Node	attr =
+				  (edu.jhu.apl.patterns_class.dom.replacement.Node )i.next();
+
+				serializePretty(attr);
+				attrCount++;
+			}
+
+			if (attrCount > 0)
+				writer.write(" ");
+
+			if (!((edu.jhu.apl.patterns_class.dom.NodeList )node.getChildNodes()).listIterator(0).hasNext())
+			{
+				writer.write("/>");
+				writer.write("\n");
+			}
+			else
+			{
+				writer.write(">");
+				writer.write("\n");
+				indentationLevel++;
+
+				for (java.util.ListIterator i =
+				  ((edu.jhu.apl.patterns_class.dom.NodeList )node.getChildNodes()).listIterator(0);
+				  i.hasNext();)
+				{
+					edu.jhu.apl.patterns_class.dom.replacement.Node	child =
+					  (edu.jhu.apl.patterns_class.dom.replacement.Node )i.next();
+
+					if (child instanceof edu.jhu.apl.patterns_class.dom.replacement.Element ||
+					  child instanceof edu.jhu.apl.patterns_class.dom.replacement.Text)
+						serializePretty(child);
+				}
+
+				indentationLevel--;
+				prettyIndentation();
+				writer.write("</" + ((edu.jhu.apl.patterns_class.dom.replacement.Element )node).getTagName() + ">");
+				writer.write("\n");
+			}
+		}
+		else if (node instanceof edu.jhu.apl.patterns_class.dom.replacement.Attr)
+		{
+			writer.write(" " + ((edu.jhu.apl.patterns_class.dom.replacement.Attr )node).getName() + "=\"" +
+			  ((edu.jhu.apl.patterns_class.dom.replacement.Attr )node).getValue() + "\"");
+		}
+		else if (node instanceof edu.jhu.apl.patterns_class.dom.replacement.Text)
+		{
+			prettyIndentation();
+			writer.write(((edu.jhu.apl.patterns_class.dom.replacement.Text )node).getData());
 			writer.write("\n");
 		}
-		else if (whitespaceType.equals("indent")){
-			prettyIndentation(writer, indentationLevel);
+	}
+
+	public void serializeMinimal(edu.jhu.apl.patterns_class.dom.replacement.Node node) throws java.io.IOException
+	{
+		if (node instanceof edu.jhu.apl.patterns_class.dom.Document)
+		{
+			writer.write("<? xml version=\"1.0\" encoding=\"UTF-8\"?>");
+			serializeMinimal(((edu.jhu.apl.patterns_class.dom.replacement.Document )node).getDocumentElement());
+		}
+		else if (node instanceof edu.jhu.apl.patterns_class.dom.replacement.Element)
+		{
+			writer.write("<" + ((edu.jhu.apl.patterns_class.dom.replacement.Element )node).getTagName());
+
+			for (java.util.ListIterator i =
+			  ((edu.jhu.apl.patterns_class.dom.NodeList )node.getAttributes()).listIterator(0);
+			  i.hasNext();)
+			{
+				edu.jhu.apl.patterns_class.dom.replacement.Node	attr =
+				  (edu.jhu.apl.patterns_class.dom.replacement.Node )i.next();
+
+				serializeMinimal(attr);
+			}
+
+			if (!((edu.jhu.apl.patterns_class.dom.NodeList )node.getChildNodes()).listIterator(0).hasNext())
+				writer.write("/>");
+			else
+			{
+				writer.write(">");
+
+				for (java.util.ListIterator i =
+				  ((edu.jhu.apl.patterns_class.dom.NodeList )node.getChildNodes()).listIterator(0);
+				  i.hasNext();)
+				{
+					edu.jhu.apl.patterns_class.dom.replacement.Node	child =
+					  (edu.jhu.apl.patterns_class.dom.replacement.Node )i.next();
+
+					if (child instanceof edu.jhu.apl.patterns_class.dom.replacement.Element ||
+					  child instanceof edu.jhu.apl.patterns_class.dom.replacement.Text)
+						serializeMinimal(child);
+				}
+
+				writer.write("</" + ((edu.jhu.apl.patterns_class.dom.replacement.Element )node).getTagName() + ">");
+			}
+		}
+		else if (node instanceof edu.jhu.apl.patterns_class.dom.replacement.Attr)
+		{
+			writer.write(" " + ((edu.jhu.apl.patterns_class.dom.replacement.Attr )node).getName() + "=\"" +
+			  ((edu.jhu.apl.patterns_class.dom.replacement.Attr )node).getValue() + "\"");
+		}
+		else if (node instanceof edu.jhu.apl.patterns_class.dom.replacement.Text)
+		{
+			writer.write(((edu.jhu.apl.patterns_class.dom.replacement.Text )node).getData());
 		}
 	}
 
-	// Strategizing how to print the xml document, with or without indentation and whitespace
-//	private void dataPrintSetStrategy(String serializeType, Node node, BufferedWriter writer, int indentationLevel) throws IOException {
-//		if (node instanceof edu.jhu.apl.patterns_class.dom.Document){
-//			writer.write("<? xml version=\"1.0\" encoding=\"UTF-8\"?>");
-//			if (serializeType.equals("pretty"))
-//				whitespaceStrategy("newline", writer, indentationLevel);
-//			dataPrintSetStrategy(serializeType, ((edu.jhu.apl.patterns_class.dom.replacement.Document )node).getDocumentElement(), writer, indentationLevel);
-//		}
-//		else if (node instanceof Element){
-//			if (serializeType.equals("pretty"))
-//				whitespaceStrategy("indent", writer, indentationLevel);
-//			writer.write("<" + ((edu.jhu.apl.patterns_class.dom.replacement.Element )node).getTagName());
-//
-//			int	attrCount	= 0;
-//
-//			for (java.util.ListIterator i =
-//				 ((edu.jhu.apl.patterns_class.dom.NodeList )node.getAttributes()).listIterator(0);
-//				 i.hasNext();)
-//			{
-//				edu.jhu.apl.patterns_class.dom.replacement.Node	attr =
-//						(edu.jhu.apl.patterns_class.dom.replacement.Node )i.next();
-//
-//				dataPrintSetStrategy(serializeType, attr, writer, indentationLevel);
-//				attrCount++;
-//			}
-//
-//			if (attrCount > 0)
-//				writer.write(" ");
-//
-//			if (!((edu.jhu.apl.patterns_class.dom.NodeList )node.getChildNodes()).listIterator(0).hasNext())
-//			{
-//				writer.write("/>");
-//				if (serializeType.equals("pretty"))
-//					whitespaceStrategy("newline", writer, indentationLevel);
-//			}
-//			else
-//			{
-//				writer.write(">");
-//				if (serializeType.equals("pretty"))
-//					whitespaceStrategy("newline", writer, indentationLevel);
-//				indentationLevel++;
-//
-//				for (java.util.ListIterator i =
-//					 ((edu.jhu.apl.patterns_class.dom.NodeList )node.getChildNodes()).listIterator(0);
-//					 i.hasNext();)
-//				{
-//					edu.jhu.apl.patterns_class.dom.replacement.Node	child =
-//							(edu.jhu.apl.patterns_class.dom.replacement.Node )i.next();
-//
-//					if (child instanceof edu.jhu.apl.patterns_class.dom.replacement.Element ||
-//							child instanceof edu.jhu.apl.patterns_class.dom.replacement.Text)
-//						//serializePretty(child);
-//						dataPrintSetStrategy(serializeType, child, writer, indentationLevel);
-//				}
-//
-//				indentationLevel--;
-//				if (serializeType.equals("pretty"))
-//					whitespaceStrategy("indent", writer, indentationLevel);
-//				writer.write("</" + ((edu.jhu.apl.patterns_class.dom.replacement.Element )node).getTagName() + ">");
-//				if (serializeType.equals("pretty"))
-//					whitespaceStrategy("newline", writer, indentationLevel);
-//			}
-//		}
-//		else if (node instanceof Attr){
-//			writer.write(" " + ((edu.jhu.apl.patterns_class.dom.replacement.Attr )node).getName() + "=\"" +
-//					((edu.jhu.apl.patterns_class.dom.replacement.Attr )node).getValue() + "\"");
-//		}
-//		else if (node instanceof Text){
-//			if (serializeType.equals("pretty"))
-//				whitespaceStrategy("indent", writer, indentationLevel);
-//			writer.write(((edu.jhu.apl.patterns_class.dom.replacement.Text )node).getData());
-//			if (serializeType.equals("pretty"))
-//				whitespaceStrategy("newline", writer, indentationLevel);
-//		}
-//	}
-
-	private void dataPrintSetStrategyWithIterator(String serializeType, Node node, BufferedWriter writer, int indentationLevel) throws IOException {
-		DepthFirstIterator iterator = new DepthFirstIterator(node);
-
-		while(iterator.currentNode != null){
-			if (iterator.currentNode instanceof edu.jhu.apl.patterns_class.dom.Document){
-				writer.write("<? xml version=\"1.0\" encoding=\"UTF-8\"?>");
-				if (serializeType.equals("pretty"))
-					whitespaceStrategy("newline", writer, indentationLevel);
-				//dataPrintSetStrategy(serializeType, ((Document )iterator.currentNode).getDocumentElement(), writer, indentationLevel);
-			}
-			else if (iterator.currentNode instanceof Element){
-				if (serializeType.equals("pretty"))
-					whitespaceStrategy("indent", writer, indentationLevel);
-				writer.write("<" + ((Element )iterator.currentNode).getTagName());
-
-				int	attrCount	= 0;
-
-				for (ListIterator i =
-					 ((edu.jhu.apl.patterns_class.dom.NodeList )iterator.currentNode.getAttributes()).listIterator(0);
-					 i.hasNext();)
-				{
-					Node	attr =
-							(Node )i.next();
-
-					//dataPrintSetStrategy(serializeType, attr, writer, indentationLevel);
-					attrCount++;
-				}
-
-				if (attrCount > 0)
-					writer.write(" ");
-
-				if (!((edu.jhu.apl.patterns_class.dom.NodeList )iterator.currentNode.getChildNodes()).listIterator(0).hasNext())
-				{
-					writer.write("/>");
-					if (serializeType.equals("pretty"))
-						whitespaceStrategy("newline", writer, indentationLevel);
-				}
-				else
-				{
-					writer.write(">");
-					if (serializeType.equals("pretty"))
-						whitespaceStrategy("newline", writer, indentationLevel);
-					indentationLevel++;
-
-					for (ListIterator i =
-						 ((edu.jhu.apl.patterns_class.dom.NodeList )iterator.currentNode.getChildNodes()).listIterator(0);
-						 i.hasNext();)
-					{
-						Node	child =
-								(Node )i.next();
-
-//						if (child instanceof Element ||
-//								child instanceof Text)
-//							//serializePretty(child);
-//							dataPrintSetStrategy(serializeType, child, writer, indentationLevel);
-					}
-
-					indentationLevel--;
-					if (serializeType.equals("pretty"))
-						whitespaceStrategy("indent", writer, indentationLevel);
-					writer.write("</" + ((Element )iterator.currentNode).getTagName() + ">");
-					if (serializeType.equals("pretty"))
-						whitespaceStrategy("newline", writer, indentationLevel);
-				}
-			}
-			else if (iterator.currentNode instanceof Attr){
-				writer.write(" " + ((Attr )iterator.currentNode).getName() + "=\"" +
-						((Attr )iterator.currentNode).getValue() + "\"");
-			}
-			else if (iterator.currentNode instanceof Text){
-				if (serializeType.equals("pretty"))
-					whitespaceStrategy("indent", writer, indentationLevel);
-				writer.write(((Text )iterator.currentNode).getData());
-				if (serializeType.equals("pretty"))
-					whitespaceStrategy("newline", writer, indentationLevel);
-			}
-			iterator.currentNode = iterator.getNext();
-		}
-	}
-
-	public static void main(String args[]) throws FileNotFoundException {
+	public static void main(String args[])
+	{
 		if (args.length < 2)
 		{
 			System.out.println("No output filenames provided.");
@@ -226,53 +173,29 @@ public class XMLSerializer
 		//   </element>
 		// </document>
 		//
-		Document	document	=
+		edu.jhu.apl.patterns_class.dom.replacement.Document	document	=
 		  new edu.jhu.apl.patterns_class.dom.Document();
-		Node	root		= document.createDOM("element", "document", null);
+		edu.jhu.apl.patterns_class.dom.replacement.Element	root		= document.createElement("document");
 		document.appendChild(root);
 
-		Node	child		= document.createDOM("element", "element", null);
-		Node		attr		= document.createDOM("attr", "attribute", null);
+		edu.jhu.apl.patterns_class.dom.replacement.Element	child		= document.createElement("element");
+		edu.jhu.apl.patterns_class.dom.replacement.Attr		attr		= document.createAttribute("attribute");
 		attr.setValue("attribute value");
 		child.setAttributeNode(attr);
 		root.appendChild(child);
 
-		child	= document.createDOM("element", "element", null);
+		child	= document.createElement("element");
 		root.appendChild(child);
 
-		child	= document.createDOM("element", "element", null);
+		child	= document.createElement("element");
 		child.setAttribute("attribute", "attribute value");
 		child.setAttribute("attribute2", "attribute2 value");
-		edu.jhu.apl.patterns_class.dom.replacement.Node		text		= document.createDOM("text", "Element Value", null);
+		edu.jhu.apl.patterns_class.dom.replacement.Text		text		= document.createTextNode("Element Value");
 		child.appendChild(text);
 		root.appendChild(child);
 
-		child	= document.createDOM("element", "element", null);
+		child	= document.createElement("element");
 		root.appendChild(child);
-
-		Document	documentDuplicate	=
-				new edu.jhu.apl.patterns_class.dom.Document();
-		Node	rootDuplicate		= documentDuplicate.createDOM("element", "document", null);
-		documentDuplicate.appendChild(rootDuplicate);
-
-		Node	childDuplicate		= documentDuplicate.createDOM("element", "element", null);
-		Node		attrDuplicate		= documentDuplicate.createDOM("attr", "attribute", null);
-		attrDuplicate.setValue("attribute value");
-		childDuplicate.setAttributeNode(attrDuplicate);
-		rootDuplicate.appendChild(childDuplicate);
-
-		childDuplicate	= documentDuplicate.createDOM("element", "element", null);
-		rootDuplicate.appendChild(childDuplicate);
-
-		childDuplicate	= documentDuplicate.createDOM("element", "element", null);
-		childDuplicate.setAttribute("attribute", "attribute value");
-		childDuplicate.setAttribute("attribute2", "attribute2 value");
-		edu.jhu.apl.patterns_class.dom.replacement.Node		textDuplicate		= documentDuplicate.createDOM("text", "Element Value", null);
-		childDuplicate.appendChild(textDuplicate);
-		rootDuplicate.appendChild(childDuplicate);
-
-		childDuplicate	= documentDuplicate.createDOM("element", "element", null);
-		rootDuplicate.appendChild(childDuplicate);
 
 		//
 		// Serialize
@@ -280,13 +203,13 @@ public class XMLSerializer
 		try
 		{
 			XMLSerializer	xmlSerializer	= new XMLSerializer(args[0]);
-			xmlSerializer.serialize("pretty", document, xmlSerializer.writer);
+			xmlSerializer.serializePretty(document);
 			xmlSerializer.close();
 			xmlSerializer	= new XMLSerializer(args[1]);
-			xmlSerializer.serialize("minimal", documentDuplicate, xmlSerializer.writer);
+			xmlSerializer.serializeMinimal(document);
 			xmlSerializer.close();
 		}
-		catch (IOException e)
+		catch (java.io.IOException e)
 		{
 			System.out.println("Error writing file.");
 			e.printStackTrace();

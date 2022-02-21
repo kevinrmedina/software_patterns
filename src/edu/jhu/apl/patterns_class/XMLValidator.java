@@ -1,14 +1,5 @@
 package edu.jhu.apl.patterns_class;
 
-import edu.jhu.apl.patterns_class.dom.decorators.CanAddAttributeDecorator;
-import edu.jhu.apl.patterns_class.dom.decorators.CanAddElementDecorator;
-import edu.jhu.apl.patterns_class.dom.decorators.CanAddTextDecorator;
-import edu.jhu.apl.patterns_class.dom.decorators.DOMSourceDecorator;
-import edu.jhu.apl.patterns_class.dom.replacement.Document;
-import edu.jhu.apl.patterns_class.dom.replacement.Node;
-
-import java.io.IOException;
-
 public class XMLValidator
 {
 	private java.util.Vector<ValidChildren>	schema	= new java.util.Vector<ValidChildren>();
@@ -39,8 +30,28 @@ public class XMLValidator
 
 	public boolean canRootElement(String newElement)
 	{
-		DOMSourceDecorator checker = new CanAddElementDecorator(null, newElement);
-		return checker.canAdd();
+		return canAddElement(null, newElement);
+	}
+
+	public boolean canAddElement(edu.jhu.apl.patterns_class.dom.replacement.Element element, String newElement)
+	{
+		ValidChildren	schemaElement	= findSchemaElement(element == null ? null : element.getTagName());
+
+		return schemaElement == null ? true : schemaElement.childIsValid(newElement, false);
+	}
+
+	public boolean canAddText(edu.jhu.apl.patterns_class.dom.replacement.Element element)
+	{
+		ValidChildren	schemaElement	= findSchemaElement(element.getTagName());
+
+		return schemaElement == null ? true : schemaElement.canHaveText();
+	}
+
+	public boolean canAddAttribute(edu.jhu.apl.patterns_class.dom.replacement.Element element, String newAttribute)
+	{
+		ValidChildren	schemaElement	= findSchemaElement(element.getTagName());
+
+		return schemaElement == null ? true : schemaElement.childIsValid(newAttribute, true);
 	}
 
 	//
@@ -86,57 +97,107 @@ public class XMLValidator
 		schemaElement.addValidChild("attribute", true);
 		schemaElement.addValidChild("attribute2", true);
 		schemaElement.setCanHaveText(true);
-		DOMSourceDecorator checker = null;
 
-		Document	document	=
+		edu.jhu.apl.patterns_class.dom.replacement.Document	document	=
 		  new edu.jhu.apl.patterns_class.dom.Document();
-		Node	root		= null;
-		Node	child		= null;
-		Node		attr		= null;
+		edu.jhu.apl.patterns_class.dom.replacement.Element	root		= null;
+		edu.jhu.apl.patterns_class.dom.replacement.Element	child		= null;
+		edu.jhu.apl.patterns_class.dom.replacement.Attr		attr		= null;
 
 		if (xmlValidator.canRootElement("document"))
 		{
-			root	= document.createDOM("element", "document", null);
+			root	= document.createElement("document");
 			document.appendChild(root);
 		}
-		else {
+		else
+		{
 			System.out.println("Attempted invalid schema operation.");
 			System.exit(0);
 		}
 
-		child	= document.createDOM("element", "element", null);
-		checker = new CanAddElementDecorator(new CanAddAttributeDecorator(child, "attribute"), root, "element");
-
-		if(checker.canAdd())
+		if (xmlValidator.canAddElement(root, "element"))
 		{
-			attr	= document.createDOM("attr", "attribute", child);
-			attr.setValue("attribute value");
-			child.setAttributeNode(attr);
-		}
+			child	= document.createElement("element");
 
-		checker = new CanAddElementDecorator(root, "element");
+			if (xmlValidator.canAddAttribute(child, "attribute"))
+			{
+				attr	= document.createAttribute("attribute");
+				attr.setValue("attribute value");
+				child.setAttributeNode(attr);
+			}
+			else
+			{
+				System.out.println("Attempted invalid schema operation.");
+				System.exit(0);
+			}
 
-		if (checker.canAdd()){
-			child	= document.createDOM("element", "element", null);
 			root.appendChild(child);
 		}
-
-		child	= document.createDOM("element", "element", null);
-		checker = new CanAddElementDecorator(new CanAddAttributeDecorator(new CanAddTextDecorator(child), child, "attribute"), root, "element");
-
-		if(checker.canAdd()){
-			child.setAttribute("attribute", "attribute value");
-			child.setAttribute("attribute2", "attribute2 value");
-			Node text = document.createDOM("text", "Element Value", null);
-			child.appendChild(text);
-			root.appendChild(child);
+		else
+		{
+			System.out.println("Attempted invalid schema operation.");
+			System.exit(0);
 		}
 
-		checker = new CanAddElementDecorator(root, "element");
-
-		if(checker.canAdd()){
-			child	= document.createDOM("element", "element", null);
+		if (xmlValidator.canAddElement(root, "element"))
+		{
+			child	= document.createElement("element");
 			root.appendChild(child);
+		}
+		else
+		{
+			System.out.println("Attempted invalid schema operation.");
+			System.exit(0);
+		}
+
+		if (xmlValidator.canAddElement(root, "element"))
+		{
+			child	= document.createElement("element");
+
+			if (xmlValidator.canAddAttribute(child, "attribute"))
+				child.setAttribute("attribute", "attribute value");
+			else
+			{
+				System.out.println("Attempted invalid schema operation.");
+				System.exit(0);
+			}
+
+			if (xmlValidator.canAddAttribute(child, "attribute2"))
+				child.setAttribute("attribute2", "attribute2 value");
+			else
+			{
+				System.out.println("Attempted invalid schema operation.");
+				System.exit(0);
+			}
+
+			if (xmlValidator.canAddText(child))
+			{
+				edu.jhu.apl.patterns_class.dom.replacement.Text text = document.createTextNode("Element Value");
+				child.appendChild(text);
+			}
+			else
+			{
+				System.out.println("Attempted invalid schema operation.");
+				System.exit(0);
+			}
+
+			root.appendChild(child);
+		}
+		else
+		{
+			System.out.println("Attempted invalid schema operation.");
+			System.exit(0);
+		}
+
+		if (xmlValidator.canAddElement(root, "element"))
+		{
+			child	= document.createElement("element");
+			root.appendChild(child);
+		}
+		else
+		{
+			System.out.println("Attempted invalid schema operation.");
+			System.exit(0);
 		}
 
 		//
@@ -145,10 +206,10 @@ public class XMLValidator
 		try
 		{
 			XMLSerializer	xmlSerializer	= new XMLSerializer(args[0]);
-			xmlSerializer.serialize("pretty", document, xmlSerializer.writer);
+			xmlSerializer.serializePretty(document);
 			xmlSerializer.close();
 		}
-		catch (IOException e)
+		catch (java.io.IOException e)
 		{
 			System.out.println("Error writing file.");
 			e.printStackTrace();

@@ -1,7 +1,5 @@
 package edu.jhu.apl.patterns_class.dom.replacement;
 
-import edu.jhu.apl.patterns_class.dom.Element;
-
 public interface Node
 {
 	//
@@ -48,20 +46,4 @@ public interface Node
 	public String getTextContent();
 	public short compareDocumentPosition(Node other);
 	public String getBaseURI();
-
-	void setValue(String attribute_value);
-
-	void setAttributeNode(Node attr);
-
-	void setAttribute(String attribute, String attribute_value);
-
-	String getTagName();
-
-	void setParent(Element element);
-
-	Node getNext();
-	boolean hasNext();
-	Node getPrevious();
-	boolean hasPrevious();
-
 }

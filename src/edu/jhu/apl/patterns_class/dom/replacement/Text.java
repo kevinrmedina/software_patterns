@@ -16,14 +16,9 @@ public interface Text extends Node
 	public void insertData(int offset, String arg);
 	public void deleteData(int offset, int count);
 	public void replaceData(int offset, int count, String arg);
-	public Node splitText(int offset);
+	public Text splitText(int offset);
 
 	public Text replaceWholeText(String content);
 	public String getWholeText();
 	public boolean isElementContentWhitespace();
-
-	Node getNext();
-	boolean hasNext();
-	Node getPrevious();
-	boolean hasPrevious();
 }

@@ -155,41 +155,6 @@ public class Node implements edu.jhu.apl.patterns_class.dom.replacement.Node
 	public String getTextContent()									{ return null; }
 	public short compareDocumentPosition(edu.jhu.apl.patterns_class.dom.replacement.Node other)	{ return (short )0; }
 	public String getBaseURI()									{ return null; }
-	public void setValue(String attribute_value) {}
-	public void setAttributeNode(edu.jhu.apl.patterns_class.dom.replacement.Node attr) {}
-	public void setAttribute(String attribute, String attribute_value) {}
-	public String getTagName() {return null;}
-	public void setParent(Element element) {}
-
-	@Override
-	public edu.jhu.apl.patterns_class.dom.replacement.Node getNext() {
-		return getFirstChild();
-	}
-
-	@Override
-	public boolean hasNext() {
-		if(getChildNodes() != null){
-			return true;
-		}
-		else{
-			return false;
-		}
-	}
-
-	@Override
-	public edu.jhu.apl.patterns_class.dom.replacement.Node getPrevious() {
-		return getParentNode();
-	}
-
-	@Override
-	public boolean hasPrevious() {
-		if(getParentNode() != null){
-			return true;
-		}
-		else{
-			return false;
-		}
-	}
 
 	//
 	// Class Members
