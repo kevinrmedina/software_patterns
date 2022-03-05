@@ -10,6 +10,17 @@ public class Text extends Node implements edu.jhu.apl.patterns_class.dom.replace
 	}
 
 	//
+	// Serialization Data Extraction Strategy
+	//
+	public void serialize(java.io.Writer writer, edu.jhu.apl.patterns_class.XMLSerializer.WhitespaceStrategy whitespace)
+	  throws java.io.IOException
+	{
+		whitespace.prettyIndentation(writer);
+		writer.write(getData());
+		whitespace.newLine(writer);
+	}
+
+	//
 	// Implemented Text members.
 	//
 	public String getName()
@@ -103,6 +114,32 @@ public class Text extends Node implements edu.jhu.apl.patterns_class.dom.replace
 			throw new org.w3c.dom.DOMException(org.w3c.dom.DOMException.INDEX_SIZE_ERR,
 			  "Index " + offset + " larger than Text node's value.");
 		}
+	}
+
+	//
+	// Overridden functions for conforming to Composite Leaf node behavior.
+	//
+	public edu.jhu.apl.patterns_class.dom.replacement.Node
+	  insertBefore(edu.jhu.apl.patterns_class.dom.replacement.Node newChild,
+	  edu.jhu.apl.patterns_class.dom.replacement.Node refChild) throws org.w3c.dom.DOMException
+	{
+		return null;
+	}
+	public edu.jhu.apl.patterns_class.dom.replacement.Node
+	  replaceChild(edu.jhu.apl.patterns_class.dom.replacement.Node newChild,
+	  edu.jhu.apl.patterns_class.dom.replacement.Node oldChild) throws org.w3c.dom.DOMException
+	{
+		return null;
+	}
+	public edu.jhu.apl.patterns_class.dom.replacement.Node removeChild(edu.jhu.apl.patterns_class.dom.replacement.Node oldChild)
+	  throws org.w3c.dom.DOMException
+	{
+		return null;
+	}
+	public edu.jhu.apl.patterns_class.dom.replacement.Node appendChild(edu.jhu.apl.patterns_class.dom.replacement.Node newChild)
+	  throws org.w3c.dom.DOMException
+	{
+		return null;
 	}
 
 	public edu.jhu.apl.patterns_class.dom.replacement.Text replaceWholeText(String content) { return null; }

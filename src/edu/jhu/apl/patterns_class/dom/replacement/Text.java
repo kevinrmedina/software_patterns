@@ -3,6 +3,12 @@ package edu.jhu.apl.patterns_class.dom.replacement;
 public interface Text extends Node
 {
 	//
+	// Serialization Data Extraction Strategy
+	//
+	public void serialize(java.io.Writer writer, edu.jhu.apl.patterns_class.XMLSerializer.WhitespaceStrategy whitespace)
+	  throws java.io.IOException;
+
+	//
 	// Implemented Text members.
 	//
 	public String getName();

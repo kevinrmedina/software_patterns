@@ -19,6 +19,14 @@ public class Node implements edu.jhu.apl.patterns_class.dom.replacement.Node
 	void setParent(Node parent)							{ this.parent = parent; }
 
 	//
+	// Serialization Data Extraction Strategy
+	//
+	public void serialize(java.io.Writer writer, edu.jhu.apl.patterns_class.XMLSerializer.WhitespaceStrategy whitespace)
+	  throws java.io.IOException
+	{
+	}
+
+	//
 	// Implemented Interface Members
 	//
 	public String getNodeName()							{ return name; }
@@ -35,7 +43,7 @@ public class Node implements edu.jhu.apl.patterns_class.dom.replacement.Node
 	  { return (edu.jhu.apl.patterns_class.dom.replacement.Node )getSibling(-1);}
 	public edu.jhu.apl.patterns_class.dom.replacement.Node getNextSibling()
 	  { return (edu.jhu.apl.patterns_class.dom.replacement.Node )getSibling(1); }
-	public edu.jhu.apl.patterns_class.dom.replacement.Document getOwnerDocument()	{ return document; }
+	public edu.jhu.apl.patterns_class.dom.replacement.Document getOwnerDocument()	{ return this.document; }
 	public edu.jhu.apl.patterns_class.dom.replacement.Node
 	  insertBefore(edu.jhu.apl.patterns_class.dom.replacement.Node newChild,
 	  edu.jhu.apl.patterns_class.dom.replacement.Node refChild) throws org.w3c.dom.DOMException

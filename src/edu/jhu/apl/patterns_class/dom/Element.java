@@ -4,11 +4,66 @@ public class Element extends Node implements edu.jhu.apl.patterns_class.dom.repl
 {
 	private NamedNodeMap		attributes	= null;
 
-	Element(String tagName, Document document)
+	public Element(String tagName, Document document)
 	{
 		super(tagName, org.w3c.dom.Node.ELEMENT_NODE);
 		this.document	= document;
 		attributes	= new NamedNodeMap(document);
+	}
+
+	//
+	// Serialization Data Extraction Strategy
+	//
+	public void serialize(java.io.Writer writer, edu.jhu.apl.patterns_class.XMLSerializer.WhitespaceStrategy whitespace)
+	  throws java.io.IOException
+	{
+		whitespace.prettyIndentation(writer);
+		writer.write("<" + getTagName());
+
+		int	attrCount	= 0;
+
+		for (java.util.ListIterator i =
+		  ((edu.jhu.apl.patterns_class.dom.NodeList )getAttributes()).listIterator(0);
+		  i.hasNext();)
+		{
+			edu.jhu.apl.patterns_class.dom.replacement.Node	attr =
+			  (edu.jhu.apl.patterns_class.dom.replacement.Node )i.next();
+
+			attr.serialize(writer, whitespace);
+			attrCount++;
+		}
+
+		if (attrCount > 0)
+			writer.write(" ");
+
+		if (!((edu.jhu.apl.patterns_class.dom.NodeList )getChildNodes()).listIterator(0).hasNext())
+		{
+			writer.write("/>");
+			whitespace.newLine(writer);
+		}
+		else
+		{
+			writer.write(">");
+			whitespace.newLine(writer);
+			whitespace.incrementIndentation();
+
+			for (java.util.ListIterator i =
+			  ((edu.jhu.apl.patterns_class.dom.NodeList )getChildNodes()).listIterator(0);
+			  i.hasNext();)
+			{
+				edu.jhu.apl.patterns_class.dom.replacement.Node	child =
+				  (edu.jhu.apl.patterns_class.dom.replacement.Node )i.next();
+
+				if (child instanceof edu.jhu.apl.patterns_class.dom.replacement.Element ||
+				  child instanceof edu.jhu.apl.patterns_class.dom.replacement.Text)
+					child.serialize(writer, whitespace);
+			}
+
+			whitespace.decrementIndentation();
+			whitespace.prettyIndentation(writer);
+			writer.write("</" + getTagName() + ">");
+			whitespace.newLine(writer);
+		}
 	}
 
 	//

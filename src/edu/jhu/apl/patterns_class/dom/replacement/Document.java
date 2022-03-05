@@ -3,12 +3,23 @@ package edu.jhu.apl.patterns_class.dom.replacement;
 public interface Document extends Node
 {
 	//
+	// Serialization Data Extraction Strategy
+	//
+	public void serialize(java.io.Writer writer, edu.jhu.apl.patterns_class.XMLSerializer.WhitespaceStrategy whitespace)
+	  throws java.io.IOException;
+
+	//
 	// Implemented Document members.
 	//
 	public Element createElement(String tagName) throws org.w3c.dom.DOMException;
 	public Text createTextNode(String data);
 	public Attr createAttribute(String name) throws org.w3c.dom.DOMException;
 	public Element getDocumentElement();
+
+	//
+	// Iterator Factory
+	//
+	public java.util.Iterator<Node> createIterator(edu.jhu.apl.patterns_class.dom.replacement.Node node);
 
 	//
 	// Unimplemented Document members.

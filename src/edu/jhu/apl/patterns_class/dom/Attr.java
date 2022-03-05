@@ -16,6 +16,15 @@ public class Attr extends Node implements edu.jhu.apl.patterns_class.dom.replace
 	}
 
 	//
+	// Serialization Data Extraction Strategy
+	//
+	public void serialize(java.io.Writer writer, edu.jhu.apl.patterns_class.XMLSerializer.WhitespaceStrategy whitespace)
+	  throws java.io.IOException
+	{
+		writer.write(" " + getName() + "=\"" + getValue() + "\"");
+	}
+
+	//
 	// Implemented Attr members.
 	//
 	public String getName()
@@ -35,6 +44,32 @@ public class Attr extends Node implements edu.jhu.apl.patterns_class.dom.replace
 	public edu.jhu.apl.patterns_class.dom.replacement.Element getOwnerElement()
 	{
 		return (Element )getParentNode();
+	}
+
+	//
+	// Overridden functions for conforming to Composite Leaf node behavior.
+	//
+	public edu.jhu.apl.patterns_class.dom.replacement.Node
+	  insertBefore(edu.jhu.apl.patterns_class.dom.replacement.Node newChild,
+	  edu.jhu.apl.patterns_class.dom.replacement.Node refChild) throws org.w3c.dom.DOMException
+	{
+		return null;
+	}
+	public edu.jhu.apl.patterns_class.dom.replacement.Node
+	  replaceChild(edu.jhu.apl.patterns_class.dom.replacement.Node newChild,
+	  edu.jhu.apl.patterns_class.dom.replacement.Node oldChild) throws org.w3c.dom.DOMException
+	{
+		return null;
+	}
+	public edu.jhu.apl.patterns_class.dom.replacement.Node removeChild(edu.jhu.apl.patterns_class.dom.replacement.Node oldChild)
+	  throws org.w3c.dom.DOMException
+	{
+		return null;
+	}
+	public edu.jhu.apl.patterns_class.dom.replacement.Node appendChild(edu.jhu.apl.patterns_class.dom.replacement.Node newChild)
+	  throws org.w3c.dom.DOMException
+	{
+		return null;
 	}
 
 	//
